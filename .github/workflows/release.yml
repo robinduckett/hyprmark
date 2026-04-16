@@ -119,9 +119,19 @@ jobs:
           PKG=/tmp/deb-staging/hyprmark_${V}_${ARCH}
           mkdir -p "$PKG/DEBIAN"
           cp -a stage/usr "$PKG/"
+          # shlibdeps only resolves .so files owned by installed Debian
+          # packages. Qt6 came from install-qt-action (not a .deb) and
+          # hyprutils/hyprlang were built into /usr/local/lib, so neither
+          # ends up in the auto-generated list. Union with a curated
+          # list of the libs those components ship as on the user's
+          # system so apt properly pulls them in.
           AUTO_DEPENDS="${{ steps.shlibdeps.outputs.depends }}"
-          FALLBACK_DEPENDS="libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6, libqt6widgets6, libqt6gui6, libqt6core6, libmd4c0, libmd4c-html0, libhyprutils11 | libhyprutils10, libhyprlang2"
-          DEPENDS="${AUTO_DEPENDS:-$FALLBACK_DEPENDS}"
+          EXTRA_DEPENDS="libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6, libqt6widgets6, libqt6gui6, libqt6core6, libqt6network6, libhyprutils11 | libhyprutils10, libhyprlang2"
+          if [ -n "$AUTO_DEPENDS" ]; then
+            DEPENDS="${AUTO_DEPENDS}, ${EXTRA_DEPENDS}"
+          else
+            DEPENDS="libmd4c0, libmd4c-html0, ${EXTRA_DEPENDS}"
+          fi
           cat > "$PKG/DEBIAN/control" <<EOF
           Package: hyprmark
           Version: ${V}
