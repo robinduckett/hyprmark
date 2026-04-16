@@ -41,11 +41,18 @@ jobs:
           sudo apt-get install -y \
             cmake pkg-config ninja-build \
             gcc-14 g++-14 \
-            qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
             libmd4c-dev libmd4c-html0-dev \
-            libpixman-1-dev dpkg-dev fakeroot
+            libpixman-1-dev dpkg-dev fakeroot \
+            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libvulkan-dev
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 140
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 140
+
+      - name: Install Qt 6.8
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.1'
+          modules: 'qtwebengine qtwebchannel qtpositioning'
+          cache: true
 
       - name: Install hyprutils + hyprlang from source
         env:

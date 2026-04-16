@@ -19,13 +19,20 @@ jobs:
           sudo apt-get install -y \
             cmake pkg-config ninja-build \
             gcc-14 g++-14 \
-            qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
             libmd4c-dev libmd4c-html0-dev \
             libgtest-dev libgmock-dev \
-            libpixman-1-dev
+            libpixman-1-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libvulkan-dev
           # hyprutils >=0.11 uses <print> (C++23), needs GCC 14+
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 140
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 140
+
+      - name: Install Qt 6.8 (newer than Ubuntu 24.04 default)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.1'
+          modules: 'qtwebengine qtwebchannel qtpositioning'
+          cache: true
 
       - name: Build + install hyprutils + hyprlang from source
         env:

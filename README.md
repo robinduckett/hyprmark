@@ -6,6 +6,10 @@
 
 A Markdown viewer for the Hyprland ecosystem.
 
+<p align="center">
+  <img src="assets/screenshots/hyprmark-main.png" alt="hyprmark viewing its own README on the left, a tiled code editor on the right, rendered with the hypr-dark theme">
+</p>
+
 - Qt6 + QtWebEngine render pipeline: Mermaid diagrams, KaTeX math, `highlight.js` code blocks with copy buttons, tables, task lists, and strike-through.
 - 7 built-in themes (purple/cyan `hypr-dark` by default) plus user-dropped `~/.config/hypr/hyprmark/themes/*.css`.
 - Live reload on disk edits; hot-reload of `~/.config/hypr/hyprmark.conf`.
