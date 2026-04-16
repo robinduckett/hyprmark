@@ -65,22 +65,40 @@ general {
 }
 ```
 
-## Build
+## Install
+
+### Debian / Ubuntu (`.deb`)
+
+`libhyprutils` and `libhyprlang` aren't in the stock archives — grab them from the community Hyprland PPA, then install the released `.deb`:
+
+```sh
+sudo add-apt-repository ppa:cppiber/hyprland
+sudo apt update
+wget https://github.com/robinduckett/hyprmark/releases/latest/download/hyprmark_0.1.0_amd64.deb
+sudo apt install ./hyprmark_0.1.0_amd64.deb
+```
+
+### Arch (AUR)
+
+`yay -S hyprmark` (or any AUR helper) once the AUR package is published. Until then, build from the PKGBUILD under [`packaging/aur/`](packaging/aur/).
+
+### Nix
+
+```sh
+nix run github:robinduckett/hyprmark
+# or install into your profile
+nix profile install github:robinduckett/hyprmark
+```
+
+### From source
 
 ```sh
 cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE=Release -S . -B build
 cmake --build build -j$(nproc)
-sudo cmake --install build  # optional, installs to /usr/local by default
+sudo cmake --install build  # optional; installs to /usr/local by default
 ```
 
 Runtime dependencies: `qt6-base`, `qt6-wayland`, `qt6-webengine`, `qt6-webchannel`, `md4c`, `hyprlang`, `hyprutils`. Debug builds also need `gtest`.
-
-## Nix
-
-```sh
-nix build .#
-./result/bin/hyprmark README.md
-```
 
 ## License
 
