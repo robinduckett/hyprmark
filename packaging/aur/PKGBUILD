@@ -1,0 +1,40 @@
+# Maintainer: Robin Duckett <robin.duckett@gmail.com>
+pkgname=hyprmark
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Markdown viewer for the Hyprland ecosystem (Qt6 + QtWebEngine)"
+arch=('x86_64')
+url="https://github.com/robinduckett/hyprmark"
+license=('BSD-3-Clause')
+depends=(
+    'qt6-base'
+    'qt6-wayland'
+    'qt6-webengine'
+    'qt6-webchannel'
+    'md4c'
+    'hyprlang'
+    'hyprutils'
+)
+makedepends=(
+    'cmake'
+    'ninja'
+    'pkg-config'
+    'git'
+)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/robinduckett/hyprmark/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$pkgname-$pkgver"
+    cmake -S . -B build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -GNinja
+    cmake --build build -j"$(nproc)"
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

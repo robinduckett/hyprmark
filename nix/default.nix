@@ -7,7 +7,6 @@
   md4c,
   hyprlang,
   hyprutils,
-  wrapQtAppsHook,
   version ? "git",
   shortRev ? "",
 }:
@@ -20,7 +19,7 @@ stdenv.mkDerivation {
   nativeBuildInputs = [
     cmake
     pkg-config
-    wrapQtAppsHook
+    qt6.wrapQtAppsHook
   ];
 
   buildInputs = [

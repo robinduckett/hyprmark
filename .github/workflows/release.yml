@@ -1,0 +1,218 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git tag to (re)release'
+        required: true
+
+# Signing artefacts + generating provenance needs these.
+permissions:
+  contents: write      # create releases + upload assets
+  id-token: write      # Sigstore keyless signing
+  attestations: write  # SLSA provenance
+
+jobs:
+  # 1. Build the Release binary on Ubuntu and emit a tarball + .deb + SBOM.
+  ubuntu-artifacts:
+    name: Ubuntu binary / .deb / SBOM
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: version
+        run: |
+          v=$(cat VERSION | tr -d '[:space:]')
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$v"
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake pkg-config ninja-build \
+            qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
+            libmd4c-dev libmd4c-html0-dev \
+            libpixman-1-dev dpkg-dev fakeroot
+
+      - name: Install hyprutils + hyprlang from source
+        run: |
+          git clone --depth 1 https://github.com/hyprwm/hyprutils.git
+          cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release
+          sudo cmake --build hyprutils/build --target install -j$(nproc)
+          git clone --depth 1 https://github.com/hyprwm/hyprlang.git
+          cmake -S hyprlang -B hyprlang/build -DCMAKE_BUILD_TYPE=Release
+          sudo cmake --build hyprlang/build --target install -j$(nproc)
+          sudo ldconfig
+
+      - name: Configure + build (Release)
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr \
+            -GNinja
+          cmake --build build -j$(nproc)
+
+      - name: Stage install tree
+        run: |
+          DESTDIR="$PWD/stage" cmake --install build
+          # Vendor assets (not installed by CMakeLists for now)
+          find stage -type d | sed 's/^/  /'
+
+      - name: Package tarball
+        run: |
+          V=${{ steps.version.outputs.version }}
+          NAME="hyprmark-${V}-linux-x86_64"
+          mkdir -p dist
+          tar --transform "s#^stage/usr/#${NAME}/#" \
+              -czf "dist/${NAME}.tar.gz" -C . stage/usr
+
+      - name: Build .deb
+        run: |
+          V=${{ steps.version.outputs.version }}
+          ARCH=amd64
+          PKG=dist/hyprmark_${V}_${ARCH}
+          mkdir -p "$PKG/DEBIAN"
+          cp -a stage/usr "$PKG/"
+          cat > "$PKG/DEBIAN/control" <<EOF
+          Package: hyprmark
+          Version: ${V}
+          Section: editors
+          Priority: optional
+          Architecture: ${ARCH}
+          Depends: qt6-base, qt6-webengine, qt6-wayland, libmd4c0, libmd4c-html0, libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6
+          Maintainer: Robin Duckett <robin.duckett@gmail.com>
+          Description: Markdown viewer for the Hyprland ecosystem
+           A Qt6 + QtWebEngine markdown viewer with Mermaid diagrams,
+           KaTeX math, syntax-highlighted code blocks, live reload,
+           a TOC sidebar, PDF export, multi-window support, and an
+           IPC dispatcher wired for Hyprland keybinds.
+          Homepage: https://github.com/robinduckett/hyprmark
+          EOF
+          fakeroot dpkg-deb --build "$PKG"
+          ls -la dist/
+
+      - name: Generate SBOM (CycloneDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          artifact-name: hyprmark-${{ steps.version.outputs.version }}-sbom.cdx.json
+          output-file: dist/hyprmark-${{ steps.version.outputs.version }}-sbom.cdx.json
+          format: cyclonedx-json
+
+      - name: Checksums
+        run: |
+          cd dist && sha256sum * | tee SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Attest build provenance (SLSA)
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: |
+            dist/hyprmark-${{ steps.version.outputs.version }}-linux-x86_64.tar.gz
+            dist/hyprmark_${{ steps.version.outputs.version }}_amd64.deb
+
+      - name: Upload artefacts for release job
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-artefacts
+          path: dist/
+          retention-days: 7
+
+  # 2. Reproducible Nix build — outputs the /result/ closure as a tarball.
+  nix-artifacts:
+    name: Nix flake artefacts
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build flake
+        run: nix build --print-build-logs .#
+      - name: Package Nix closure
+        run: |
+          V=$(cat VERSION | tr -d '[:space:]')
+          mkdir -p dist
+          nix-store --export $(nix-store -qR result) | gzip > \
+            dist/hyprmark-${V}-nix-closure.nar.gz
+          ls -la dist/
+      - name: Attest build provenance (Nix closure)
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nix-artefacts
+          path: dist/
+
+  # 3. AUR release. Requires secrets.AUR_SSH_KEY (private key) and
+  # secrets.AUR_USERNAME / AUR_EMAIL (committer identity) to be set on the
+  # repo. Comment out this whole job until the secrets exist.
+  aur-release:
+    name: AUR publish
+    runs-on: ubuntu-24.04
+    needs: ubuntu-artifacts
+    if: ${{ vars.AUR_ENABLED == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render PKGBUILD
+        env:
+          VERSION: ${{ needs.ubuntu-artifacts.outputs.version }}
+        run: |
+          sed -i "s/^pkgver=.*/pkgver=${VERSION}/" packaging/aur/PKGBUILD
+          cat packaging/aur/PKGBUILD
+      - name: Publish to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v3.0.1
+        with:
+          pkgname: hyprmark
+          pkgbuild: packaging/aur/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_KEY }}
+          commit_message: "hyprmark ${{ needs.ubuntu-artifacts.outputs.version }}"
+
+  # 4. Create the GitHub Release and attach every artefact.
+  release:
+    name: Publish release
+    runs-on: ubuntu-24.04
+    needs: [ubuntu-artifacts, nix-artifacts]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artefacts
+      - name: Flatten
+        run: |
+          mkdir -p dist
+          find artefacts -type f -exec cp {} dist/ \;
+          ls -la dist/
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, '-pre') || contains(github.ref, '-rc') }}
+          body: |
+            hyprmark ${{ needs.ubuntu-artifacts.outputs.version }}
+
+            Artefacts in this release are SLSA-attested via Sigstore
+            (`actions/attest-build-provenance`). Verify with:
+
+            ```sh
+            gh attestation verify hyprmark_${{ needs.ubuntu-artifacts.outputs.version }}_amd64.deb \
+              --repo ${{ github.repository }}
+            ```
+
+            The `.deb` installs to `/usr`. The tarball is a `/usr`-relative
+            staging tree. Nix users: `nix run github:${{ github.repository }}`.

@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  ubuntu-build:
     name: Build + test (Ubuntu)
     runs-on: ubuntu-24.04
     steps:
@@ -21,23 +21,17 @@ jobs:
             qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
             libmd4c-dev libmd4c-html0-dev \
             libgtest-dev libgmock-dev \
-            hyprlang-dev hyprutils-dev \
-          || sudo apt-get install -y \
-            build-essential cmake pkg-config ninja-build \
-            qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
-            libmd4c-dev libmd4c-html0-dev libgtest-dev libgmock-dev
+            libpixman-1-dev
 
-      - name: Install hyprlang + hyprutils from source (if apt packages missing)
+      - name: Build + install hyprutils + hyprlang from source
         run: |
-          if ! pkg-config --exists hyprlang; then
-            git clone https://github.com/hyprwm/hyprutils.git
-            cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release
-            sudo cmake --build hyprutils/build --target install -j$(nproc)
-            git clone https://github.com/hyprwm/hyprlang.git
-            cmake -S hyprlang -B hyprlang/build -DCMAKE_BUILD_TYPE=Release
-            sudo cmake --build hyprlang/build --target install -j$(nproc)
-            sudo ldconfig
-          fi
+          git clone --depth 1 https://github.com/hyprwm/hyprutils.git
+          cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release
+          sudo cmake --build hyprutils/build --target install -j$(nproc)
+          git clone --depth 1 https://github.com/hyprwm/hyprlang.git
+          cmake -S hyprlang -B hyprlang/build -DCMAKE_BUILD_TYPE=Release
+          sudo cmake --build hyprlang/build --target install -j$(nproc)
+          sudo ldconfig
 
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -GNinja
@@ -58,3 +52,5 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Build
         run: nix build --print-build-logs .#
+      - name: Smoke
+        run: ./result/bin/hyprmark --version
