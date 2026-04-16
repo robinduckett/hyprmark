@@ -92,33 +92,62 @@ jobs:
           tar --transform "s#^stage/usr/#${NAME}/#" \
               -czf "dist/${NAME}.tar.gz" -C . stage/usr
 
+      - name: Resolve runtime Depends via dpkg-shlibdeps
+        id: shlibdeps
+        run: |
+          # dpkg-shlibdeps reads the built ELF binary and, for every
+          # NEEDED .so entry, finds the Debian package that owns the
+          # library — then prints a Depends string with version ranges.
+          # Add /usr/local/lib (where we installed hyprutils+hyprlang)
+          # so shlibdeps can resolve them too.
+          echo "/usr/local/lib" | sudo tee -a /etc/ld.so.conf.d/hyprland-local.conf >/dev/null
+          sudo ldconfig
+          mkdir -p debian-tmp/debian
+          touch debian-tmp/debian/control
+          cd debian-tmp
+          dpkg-shlibdeps --ignore-missing-info -O ../build/hyprmark 2>/dev/null \
+            | sed 's/^shlibs:Depends=//' > ../build/shlibs.depends || true
+          cd ..
+          echo "shlibs.depends:"
+          cat build/shlibs.depends || true
+          echo "depends=$(cat build/shlibs.depends 2>/dev/null)" >> "$GITHUB_OUTPUT"
+
       - name: Build .deb
         run: |
           V=${{ steps.version.outputs.version }}
           ARCH=amd64
-          # Stage the debian tree OUTSIDE dist/ so the un-packed contents
-          # never land in the uploaded artefact bundle; only the final
-          # .deb ends up in dist/.
           PKG=/tmp/deb-staging/hyprmark_${V}_${ARCH}
           mkdir -p "$PKG/DEBIAN"
           cp -a stage/usr "$PKG/"
+          AUTO_DEPENDS="${{ steps.shlibdeps.outputs.depends }}"
+          FALLBACK_DEPENDS="libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6, libqt6widgets6, libqt6gui6, libqt6core6, libmd4c0, libmd4c-html0, libhyprutils11 | libhyprutils10, libhyprlang2"
+          DEPENDS="${AUTO_DEPENDS:-$FALLBACK_DEPENDS}"
           cat > "$PKG/DEBIAN/control" <<EOF
           Package: hyprmark
           Version: ${V}
           Section: editors
           Priority: optional
           Architecture: ${ARCH}
-          Depends: libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6, libqt6widgets6, libqt6gui6, libqt6core6, libmd4c0, libmd4c-html0
+          Depends: ${DEPENDS}
+          Recommends: qt6-wayland
           Maintainer: Robin Duckett <robin.duckett@gmail.com>
           Description: Markdown viewer for the Hyprland ecosystem
            A Qt6 + QtWebEngine markdown viewer with Mermaid diagrams,
            KaTeX math, syntax-highlighted code blocks, live reload,
            a TOC sidebar, PDF export, multi-window support, and an
            IPC dispatcher wired for Hyprland keybinds.
+           .
+           libhyprutils / libhyprlang are not in the stock Debian or
+           Ubuntu archives; enable the community hyprland PPA first:
+           add-apt-repository ppa:cppiber/hyprland && apt update
           Homepage: https://github.com/robinduckett/hyprmark
           EOF
+          echo "--- control ---"
+          cat "$PKG/DEBIAN/control"
           mkdir -p dist
           fakeroot dpkg-deb --build "$PKG" "dist/hyprmark_${V}_${ARCH}.deb"
+          echo "--- dpkg-deb --info ---"
+          dpkg-deb --info "dist/hyprmark_${V}_${ARCH}.deb"
           ls -la dist/
 
       - name: Generate SBOM (CycloneDX)
