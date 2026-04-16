@@ -14,6 +14,15 @@ A Markdown viewer for the Hyprland ecosystem.
 
 Status: early development (v0.1.0, pre-alpha).
 
+## Recommended Setup
+
+Add to `~/.config/hypr/hyprland.conf`:
+
+```ini
+# Save area to file
+bind = $mainMod CTRL, M, exec, hyprmark
+```
+
 ## Usage
 
 ```sh

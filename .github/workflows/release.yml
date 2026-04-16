@@ -39,12 +39,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            build-essential cmake pkg-config ninja-build \
+            cmake pkg-config ninja-build \
+            gcc-14 g++-14 \
             qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
             libmd4c-dev libmd4c-html0-dev \
             libpixman-1-dev dpkg-dev fakeroot
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 140
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 140
 
       - name: Install hyprutils + hyprlang from source
+        env:
+          CC: gcc-14
+          CXX: g++-14
         run: |
           git clone --depth 1 https://github.com/hyprwm/hyprutils.git
           cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release
@@ -55,6 +61,9 @@ jobs:
           sudo ldconfig
 
       - name: Configure + build (Release)
+        env:
+          CC: gcc-14
+          CXX: g++-14
         run: |
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
