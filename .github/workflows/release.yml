@@ -96,7 +96,10 @@ jobs:
         run: |
           V=${{ steps.version.outputs.version }}
           ARCH=amd64
-          PKG=dist/hyprmark_${V}_${ARCH}
+          # Stage the debian tree OUTSIDE dist/ so the un-packed contents
+          # never land in the uploaded artefact bundle; only the final
+          # .deb ends up in dist/.
+          PKG=/tmp/deb-staging/hyprmark_${V}_${ARCH}
           mkdir -p "$PKG/DEBIAN"
           cp -a stage/usr "$PKG/"
           cat > "$PKG/DEBIAN/control" <<EOF
@@ -105,7 +108,7 @@ jobs:
           Section: editors
           Priority: optional
           Architecture: ${ARCH}
-          Depends: qt6-base, qt6-webengine, qt6-wayland, libmd4c0, libmd4c-html0, libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6
+          Depends: libqt6webenginecore6, libqt6webenginewidgets6, libqt6webchannel6, libqt6widgets6, libqt6gui6, libqt6core6, libmd4c0, libmd4c-html0
           Maintainer: Robin Duckett <robin.duckett@gmail.com>
           Description: Markdown viewer for the Hyprland ecosystem
            A Qt6 + QtWebEngine markdown viewer with Mermaid diagrams,
@@ -114,7 +117,8 @@ jobs:
            IPC dispatcher wired for Hyprland keybinds.
           Homepage: https://github.com/robinduckett/hyprmark
           EOF
-          fakeroot dpkg-deb --build "$PKG"
+          mkdir -p dist
+          fakeroot dpkg-deb --build "$PKG" "dist/hyprmark_${V}_${ARCH}.deb"
           ls -la dist/
 
       - name: Generate SBOM (CycloneDX)
@@ -207,10 +211,15 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artefacts
-      - name: Flatten
+      - name: Flatten release artefacts
         run: |
+          # Only pull top-level files from each artefact bundle; never
+          # walk into nested directories (defence-in-depth against
+          # staging leaks from earlier jobs).
           mkdir -p dist
-          find artefacts -type f -exec cp {} dist/ \;
+          for d in artefacts/*/; do
+            find "$d" -maxdepth 1 -type f -exec cp {} dist/ \;
+          done
           ls -la dist/
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
