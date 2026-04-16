@@ -7,37 +7,13 @@
    viewBox="0 0 135.46666 135.46667"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
-   sodipodi:docname="icon.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="0.61647026"
-     inkscape:cx="120.8493"
-     inkscape:cy="339.83797"
-     inkscape:window-width="1588"
-     inkscape:window-height="855"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <linearGradient
-       id="linearGradient1"
-       inkscape:collect="always">
+       id="linearGradient1">
       <stop
          style="stop-color:#d0adea;stop-opacity:1;"
          offset="0"
@@ -48,7 +24,6 @@
          id="stop2" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient1"
        id="linearGradient2"
        x1="50.915855"
@@ -58,7 +33,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(7.9519806,0,0,7.9519806,-314.76156,-459.13521)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient1"
        id="linearGradient4"
        x1="42.48605"
@@ -68,7 +42,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(7.9519806,0,0,7.9519806,-320.19148,-458.10295)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient1"
        id="linearGradient5"
        x1="44.796741"
@@ -79,39 +52,24 @@
        gradientTransform="matrix(7.9519806,0,0,7.9519806,-320.19148,-458.10295)" />
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
        id="g5"
        transform="translate(0.23527758,4.1096623)">
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.0528px;font-family:Uroob;-inkscape-font-specification:Uroob;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;vector-effect:non-scaling-stroke;fill:url(#linearGradient2);fill-rule:nonzero;stroke:none;stroke-width:2.10396;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
-         x="47.232922"
-         y="71.789978"
-         id="text1"><tspan
-           sodipodi:role="line"
-           id="tspan1"
-           style="font-size:28.0528px;vector-effect:non-scaling-stroke;fill:url(#linearGradient2);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.10396;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
-           x="47.232922"
-           y="71.789978">Hyprmark</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:55.5406px;font-family:Uroob;-inkscape-font-specification:Uroob;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;vector-effect:non-scaling-stroke;fill:url(#linearGradient4);stroke:none;stroke-width:4.16555;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
-         x="2.50928"
-         y="83.820229"
-         id="text2"><tspan
-           sodipodi:role="line"
-           id="tspan2"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Victor Mono';-inkscape-font-specification:'Victor Mono Bold';fill:url(#linearGradient4);stroke-width:4.16555"
-           x="2.50928"
-           y="83.820229">A</tspan></text>
+      <path
+         style="font-size:28.0528px;font-family:Uroob;-inkscape-font-specification:Uroob;fill:url(#linearGradient2);stroke-width:2.10396"
+         d="m 58.999208,71.789978 h -2.520369 v -7.807664 h -5.396876 v 7.807664 H 48.561594 V 54.969257 q 0,-0.273954 0.205465,-0.479418 0.205465,-0.205465 0.479418,-0.205465 h 1.835486 v 7.520013 h 5.396876 v -7.520013 h 1.835486 q 0.273953,0 0.479418,0.205465 0.205465,0.205464 0.205465,0.479418 z m 7.94464,-0.808162 q -0.794464,0.794464 -1.602626,0.794464 h -2.191625 q -1.191696,0 -2.054648,-0.808161 -0.862952,-0.808162 -0.862952,-2.013556 V 58.434764 h 2.342299 v 10.067777 q 0,0.520511 0.287651,0.890347 0.301348,0.356139 0.862952,0.356139 h 1.999858 q 0.821859,0.0137 1.041022,-0.999929 0.05479,-0.273953 0.05479,-0.52051 V 58.57174 h 2.342299 v 13.505889 q 0,0.452022 0.0137,1.041022 0.0137,0.588999 -0.09588,2.602554 -0.109581,2.013556 -2.314903,2.013556 h -3.150461 q -0.972534,0 -1.739603,-0.630092 -0.780766,-0.630093 -0.780766,-1.575231 v -0.739673 h 2.082044 q 0,0.725975 0.602697,1.054719 0.191767,0.109581 0.410929,0.09588 h 1.356068 q 0.890348,-0.0137 1.273882,-0.588999 0.136977,-0.191768 0.123279,-0.465721 z m 5.753016,-11.875867 q 0.890347,-0.64379 1.98616,-0.64379 h 0.958836 q 1.739602,0 2.780624,0.999929 1.041022,0.999929 1.041022,2.766926 v 5.479063 q 0,2.876507 -1.93137,3.753157 -0.671185,0.301349 -1.616323,0.301349 h -1.506742 q -0.890348,0 -1.506743,-0.671185 v 6.698153 h -2.369694 l 0.0137,-19.327392 h 2.150532 z m 4.424342,8.424058 v -4.972249 q 0,-1.068417 -0.23286,-1.424556 -0.424627,-0.657488 -1.410858,-0.657488 h -1.177999 q -0.424627,0 -0.917743,0.301349 -0.479418,0.301348 -0.479418,0.712278 v 6.889921 q 0,0.410929 0.506814,0.890347 0.506813,0.465721 0.890347,0.465721 h 1.177999 q 1.356068,0 1.57523,-1.356068 0.05479,-0.397232 0.06849,-0.849255 z m 9.821222,-7.06799 -1.383463,-0.0137 q -1.725905,0 -2.246416,1.246487 -0.17807,0.424627 -0.17807,0.972533 V 71.77628 H 80.79218 l -0.0137,-12.136123 q -0.602697,0 -0.602697,-0.452022 v -0.794464 h 2.698438 v 1.246486 q 0.191767,-0.547906 0.69858,-0.904045 0.506814,-0.356139 1.082115,-0.356139 h 2.287509 z m 9.177428,-1.068418 q 0.616395,-0.958835 1.630021,-0.958835 h 2.602553 q 1.1917,0 2.05465,0.808161 0.86295,0.808162 0.86295,2.013556 V 71.77628 h -2.3423 V 61.708503 q 0,-0.520511 -0.30135,-0.87665 -0.28765,-0.369836 -0.84925,-0.369836 h -1.862881 q -0.684883,0 -0.890348,0.945138 -0.05479,0.246558 -0.05479,0.452023 V 71.77628 H 94.613114 V 61.489341 q 0,-0.684883 -0.725976,-0.958836 -0.205465,-0.08219 -0.41093,-0.06849 h -1.999857 q -0.82186,0 -0.82186,1.931369 V 71.77628 H 88.298495 V 58.434764 h 2.095741 v 0.821859 q 0.602697,-0.821859 1.465649,-0.821859 h 2.465578 q 1.150603,0 1.794393,0.958835 z M 111.653,61.626317 q 0,-1.150603 -1.10951,-1.150603 h -2.49298 q -0.41092,0 -0.64379,0.260256 -0.21916,0.246558 -0.23286,0.64379 h -2.35599 q 0.0274,-1.246487 0.80816,-2.109439 0.78077,-0.862953 1.98616,-0.862953 h 3.65727 q 1.178,0 1.93137,0.849255 0.75337,0.849255 0.75337,2.068346 v 10.465009 h -2.2875 v -0.534209 q -0.73968,0.575302 -1.45196,0.575302 h -2.24641 q -1.24649,0 -2.26011,-0.808162 -1.01363,-0.808161 -1.01363,-1.98616 v -2.602554 q 0,-1.205394 1.01363,-2.013556 1.01362,-0.808162 2.26011,-0.808162 h 2.65734 q 0.54791,0 1.02733,0.301349 z m -0.0411,6.95841 v -1.69851 q 0,-0.520511 -0.30135,-0.87665 -0.28765,-0.369836 -0.84926,-0.369836 h -2.3286 q -0.5753,0 -0.83556,0.369836 -0.26025,0.356139 -0.26025,0.87665 v 1.69851 q 0,0.52051 0.26025,0.890347 0.26026,0.356139 0.83556,0.356139 h 2.3286 q 0.56161,0 0.84926,-0.356139 0.30135,-0.369837 0.30135,-0.890347 z m 9.876,-8.12271 -1.38346,-0.0137 q -1.7259,0 -2.24641,1.246487 -0.17807,0.424627 -0.17807,0.972533 v 9.108941 h -2.3423 l -0.0137,-12.136123 q -0.6027,0 -0.6027,-0.452022 v -0.794464 h 2.69844 v 1.246486 q 0.19177,-0.547906 0.69858,-0.904045 0.50681,-0.356139 1.08212,-0.356139 h 2.2875 z m 10.06778,10.39652 q 0.12328,0.219163 0.12328,0.438325 0,0.205465 -0.16437,0.342442 -0.15068,0.136976 -0.38354,0.136976 h -1.49304 l -0.69858,-0.999929 -2.71214,-4.492831 -0.95883,1.575231 v 3.862739 h -2.356 V 54.352862 h 2.356 v 9.862312 l 2.71213,-4.479133 0.97254,-1.273882 h 1.21909 q 0.24655,0 0.45202,0.164372 0.20546,0.150674 0.20546,0.356139 0,0.191767 -0.20546,0.588999 -0.20547,0.397232 -0.53421,0.945138 -0.31505,0.547906 -0.69858,1.177999 -0.38353,0.616394 -0.73967,1.191696 -0.35614,0.561604 -0.6301,0.999929 -0.27395,0.438325 -0.38353,0.602696 z"
+         id="text1"
+         aria-label="Hyprmark" />
+      <path
+         style="font-weight:bold;font-size:55.5406px;font-family:'Victor Mono';-inkscape-font-specification:'Victor Mono Bold';fill:url(#linearGradient4);stroke-width:4.16555"
+         d="M 31.996289,83.820229 20.736695,43.427065 H 14.627229 L 3.3171432,83.820229 H 9.3256263 L 11.90069,74.428818 h 11.512052 l 2.575064,9.391411 z M 17.656716,53.373882 21.94849,69.076724 h -8.583547 z"
+         id="text2"
+         aria-label="A" />
       <path
          id="path2-4"
          style="vector-effect:non-scaling-stroke;fill:url(#linearGradient5);stroke:none;stroke-width:3.62417;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
-         d="m 33.521251,67.715725 v 21.954208 h 5.585964 V 37.577389 H 33.39138 v 8.314027 16.10843 z m 6.82012,25.644723 h 4.125813 V 87.774442 H 27.595491 v 5.715873 h 4.390749 2.639239 z m 0,-54.017465 h 4.125813 V 33.757027 H 27.595491 v 5.715828 h 4.390749 2.639239 z"
-         sodipodi:nodetypes="cccccccccccccccccccccccc" />
+         d="m 33.521251,67.715725 v 21.954208 h 5.585964 V 37.577389 H 33.39138 v 8.314027 16.10843 z m 6.82012,25.644723 h 4.125813 V 87.774442 H 27.595491 v 5.715873 h 4.390749 2.639239 z m 0,-54.017465 h 4.125813 V 33.757027 H 27.595491 v 5.715828 h 4.390749 2.639239 z" />
     </g>
   </g>
 </svg>
