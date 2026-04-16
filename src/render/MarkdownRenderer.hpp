@@ -41,7 +41,6 @@ class CMarkdownRenderer {
   private:
     std::string loadTemplate();
     std::string makeFullPage(const std::string& bodyHtml, const std::string& sourcePath);
-    static std::vector<SHeading> extractHeadings(const std::string& bodyHtml);
 
     std::filesystem::path m_assetBase = "/usr/share/hyprmark";
     std::string           m_themeUrl;        // e.g. file:///usr/share/hyprmark/themes/hypr-dark.css

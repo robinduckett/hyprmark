@@ -26,8 +26,7 @@ int CHyprmark::run(int argc, char** argv, const std::string& configPath, const s
 
     Debug::log(LOG, "Qt {} on {}", qVersion(), QGuiApplication::platformName().toStdString());
 
-    (void)configPath; // config already parsed in main() before we got here
-    (void)filePath;   // passed directly to newWindow() below
+    (void)configPath; // config already parsed in main() before we got here; accepted here for symmetry with future flows
 
     // renderer + theme manager are globals but only needed once Qt is up so
     // constructing them here keeps destruction order sane (they hold no Qt

@@ -39,8 +39,8 @@ class CMainWindow : public QMainWindow {
     void zoomReset();
 
     void findInPage();
-    void toggleToc();       // placeholder, real impl in M7
-    void exportPdf();       // placeholder, real impl in M9
+    void toggleToc();
+    void exportPdf();
 
     // Status bar helpers.
     void showInfo(const QString& text, int timeoutMs = 3000);

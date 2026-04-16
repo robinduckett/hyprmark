@@ -208,19 +208,3 @@ std::string CMarkdownRenderer::makeFullPage(const std::string& bodyHtml, const s
     return tpl;
 }
 
-std::vector<SHeading> CMarkdownRenderer::extractHeadings(const std::string& bodyHtml) {
-    std::vector<SHeading> out;
-    std::vector<std::string> used;
-    static const std::regex HEADING(R"(<h([1-6])(?:\s+id=\"([^\"]*)\")?>([\s\S]*?)</h\1>)", std::regex::ECMAScript);
-    auto it = bodyHtml.cbegin();
-    std::smatch m;
-    while (std::regex_search(it, bodyHtml.cend(), m, HEADING)) {
-        SHeading h;
-        h.level = std::stoi(m[1].str());
-        h.text  = stripTags(m[3].str());
-        h.id    = m[2].matched ? m[2].str() : slug(h.text, used);
-        out.push_back(std::move(h));
-        it = m.suffix().first;
-    }
-    return out;
-}
