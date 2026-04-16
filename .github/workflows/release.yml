@@ -212,7 +212,7 @@ jobs:
             libpixman-1-dev \
             libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libvulkan-dev \
             libfuse2 libfuse3-3 \
-            file patchelf desktop-file-utils appstream
+            file patchelf desktop-file-utils appstream librsvg2-bin
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 140
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 140
 
