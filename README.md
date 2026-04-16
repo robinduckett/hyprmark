@@ -4,6 +4,13 @@
 
 # hyprmark
 
+<p align="center">
+  <a href="https://github.com/robinduckett/hyprmark/actions/workflows/ci.yml"><img src="https://github.com/robinduckett/hyprmark/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/robinduckett/hyprmark/actions/workflows/release.yml"><img src="https://github.com/robinduckett/hyprmark/actions/workflows/release.yml/badge.svg" alt="Release"></a>
+  <a href="https://github.com/robinduckett/hyprmark/releases/latest"><img src="https://img.shields.io/github/v/release/robinduckett/hyprmark?display_name=tag&sort=semver" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/robinduckett/hyprmark" alt="License: BSD-3-Clause"></a>
+</p>
+
 A Markdown viewer for the Hyprland ecosystem.
 
 <p align="center">
