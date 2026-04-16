@@ -274,6 +274,19 @@ jobs:
             https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x tools/linuxdeploy tools/linuxdeploy-plugin-qt
 
+      - name: Strip Qt position/nmea plugin (avoids spurious SerialPort dep)
+        run: |
+          # WebEngine pulls libQt6Positioning in as a transitive dep.
+          # linuxdeploy-plugin-qt auto-scans the whole plugin tree and
+          # tries to bundle position/libqtposition_nmea.so, which has
+          # a runtime dep on libQt6SerialPort (not installed, not used
+          # by hyprmark). Nuke the entire position plugin dir; nothing
+          # in hyprmark asks for geolocation.
+          PLUGINS="${QT_PLUGIN_PATH:-${Qt6_DIR}/../../../plugins}"
+          echo "Qt plugin dir: $PLUGINS"
+          rm -rf "$PLUGINS/position" || true
+          ls -la "$PLUGINS" | head
+
       - name: Build AppImage
         env:
           OUTPUT: hyprmark-${{ steps.version.outputs.version }}-x86_64.AppImage
