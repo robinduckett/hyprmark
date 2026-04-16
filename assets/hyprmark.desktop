@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=hyprmark
+Comment=Markdown viewer for Hyprland
+Exec=hyprmark %F
+Icon=hyprmark
+Terminal=false
+Type=Application
+Categories=Office;Viewer;Utility;
+MimeType=text/markdown;text/x-markdown;
+StartupWMClass=hyprmark

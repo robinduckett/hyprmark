@@ -1,0 +1,49 @@
+/* hyprmark theme: hypr-dark
+ * The default. Purple → cyan gradients lifted from Hyprland's brand palette. */
+
+:root {
+    --hm-bg:               #0b0a14;
+    --hm-fg:               #e6e1ff;
+    --hm-heading-fg:       #e6e1ff;
+
+    --hm-link:             #6dd1ff;
+    --hm-rule:             #2a1f47;
+
+    --hm-quote-fg:         #a89cc8;
+    --hm-quote-border:     #b478ff;
+
+    --hm-inline-code-bg:   rgba(180,120,255,.14);
+    --hm-code-bg:          #100c1e;
+    --hm-code-fg:          #e6e1ff;
+
+    --hm-copy-bg:          rgba(180,120,255,.12);
+    --hm-copy-fg:          #e6e1ff;
+    --hm-copy-border:      rgba(180,120,255,.25);
+    --hm-copy-hover-bg:    rgba(180,120,255,.24);
+    --hm-copy-ok-bg:       #4bd37b;
+
+    --hm-table-head-bg:    rgba(180,120,255,.10);
+
+    --hm-error-bg:         rgba(255,100,100,.10);
+    --hm-error-border:     rgba(255,100,100,.35);
+
+    --hm-font-body:        "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --hm-font-mono:        "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace;
+    --hm-font-size:        15px;
+
+    /* Mermaid's built-in palette hint — see mermaid docs. "dark" works for dark themes. */
+    --hm-mermaid-theme:    dark;
+}
+
+/* Gradient wordmark-style h1 */
+h1 {
+    background: linear-gradient(90deg, #b478ff, #6dd1ff);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+}
+
+/* Selection color */
+::selection {
+    background: rgba(180,120,255,.35);
+}

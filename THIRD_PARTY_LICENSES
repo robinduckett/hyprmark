@@ -1,0 +1,32 @@
+hyprmark bundles the following third-party components under their own licenses.
+These are vendored into assets/vendor/ by scripts/update-vendor.sh.
+
+================================================================================
+mermaid  (https://github.com/mermaid-js/mermaid)
+Pinned:  v11.x
+License: MIT
+Copyright (c) 2014 - 2022 Knut Sveidqvist
+================================================================================
+
+================================================================================
+highlight.js  (https://github.com/highlightjs/highlight.js)
+Pinned:  v11.x
+License: BSD-3-Clause
+Copyright (c) 2006, Ivan Sagalaev
+================================================================================
+
+================================================================================
+KaTeX  (https://github.com/KaTeX/KaTeX)
+Pinned:  v0.16.x  (katex.min.{js,css} + contrib/auto-render.min.js)
+License: MIT
+Copyright (c) 2013-2020 Khan Academy and other contributors
+================================================================================
+
+================================================================================
+qwebchannel.js  (from Qt6 WebChannel)
+License: GPL-3.0-or-later WITH Qt-GPL-exception-1.0 (dynamically loaded at
+runtime from the system-installed Qt6 via qrc:/qtwebchannel/qwebchannel.js;
+not vendored into this repository).
+================================================================================
+
+hyprmark itself is licensed under BSD-3-Clause. See LICENSE.

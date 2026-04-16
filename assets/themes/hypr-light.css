@@ -1,0 +1,43 @@
+/* hyprmark theme: hypr-light (sibling of hypr-dark for bright environments) */
+
+:root {
+    --hm-bg:               #faf8ff;
+    --hm-fg:               #1a1235;
+    --hm-heading-fg:       #1a1235;
+
+    --hm-link:             #7c3aed;
+    --hm-rule:             #d9d1f0;
+
+    --hm-quote-fg:         #4a3d6e;
+    --hm-quote-border:     #9f7bff;
+
+    --hm-inline-code-bg:   rgba(124,58,237,.10);
+    --hm-code-bg:          #efeafb;
+    --hm-code-fg:          #1a1235;
+
+    --hm-copy-bg:          rgba(124,58,237,.10);
+    --hm-copy-fg:          #1a1235;
+    --hm-copy-border:      rgba(124,58,237,.22);
+    --hm-copy-hover-bg:    rgba(124,58,237,.20);
+    --hm-copy-ok-bg:       #16a34a;
+
+    --hm-table-head-bg:    rgba(124,58,237,.06);
+
+    --hm-error-bg:         rgba(220,38,38,.06);
+    --hm-error-border:     rgba(220,38,38,.30);
+
+    --hm-font-body:        "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --hm-font-mono:        "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --hm-font-size:        15px;
+
+    --hm-mermaid-theme:    default;
+}
+
+h1 {
+    background: linear-gradient(90deg, #7c3aed, #06b6d4);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+}
+
+::selection { background: rgba(124,58,237,.22); }

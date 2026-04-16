@@ -1,0 +1,148 @@
+/* hyprmark.css — base layout and chrome styles that are theme-agnostic.
+ * Theme CSS files (themes/*.css) supply colour custom-properties and
+ * typography accents. Highlight.js CSS lives separately in highlight-theme.css. */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--hm-font-body, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+    font-size: var(--hm-font-size, 15px);
+    line-height: 1.6;
+    background: var(--hm-bg, #fff);
+    color: var(--hm-fg, #1f2328);
+}
+
+main#hyprmark-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 40px 64px;
+    word-wrap: break-word;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+    line-height: 1.25;
+    color: var(--hm-heading-fg, inherit);
+}
+h1 { font-size: 2em;    border-bottom: 1px solid var(--hm-rule, rgba(128,128,128,.2)); padding-bottom: .3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--hm-rule, rgba(128,128,128,.15)); padding-bottom: .3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+
+p { margin: 0.75em 0; }
+
+a { color: var(--hm-link, #0969da); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+blockquote {
+    margin: 1em 0;
+    padding: 0.2em 1em;
+    border-left: 4px solid var(--hm-quote-border, rgba(128,128,128,.3));
+    color: var(--hm-quote-fg, inherit);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--hm-rule, rgba(128,128,128,.25));
+    margin: 2em 0;
+}
+
+/* Inline code */
+code {
+    font-family: var(--hm-font-mono, ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", Consolas, monospace);
+    font-size: 0.92em;
+    background: var(--hm-inline-code-bg, rgba(128,128,128,.12));
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+}
+
+/* Code block wrapper */
+.code-block {
+    position: relative;
+    margin: 1em 0;
+    background: var(--hm-code-bg, #0d1117);
+    color: var(--hm-code-fg, #e6edf3);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    background: transparent;
+}
+
+.code-block pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.88em;
+    line-height: 1.55;
+}
+
+.code-block .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 3px 10px;
+    font: inherit;
+    font-size: 11px;
+    background: var(--hm-copy-bg, rgba(255,255,255,.08));
+    color: var(--hm-copy-fg, #e6edf3);
+    border: 1px solid var(--hm-copy-border, rgba(255,255,255,.12));
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.code-block:hover .copy-btn,
+.code-block .copy-btn:focus { opacity: 1; }
+.code-block .copy-btn:hover { background: var(--hm-copy-hover-bg, rgba(255,255,255,.16)); }
+.code-block .copy-btn.copied { background: var(--hm-copy-ok-bg, #2ea043); color: #fff; }
+
+/* Mermaid container */
+.mermaid {
+    text-align: center;
+    margin: 1em 0;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+}
+th, td {
+    border: 1px solid var(--hm-rule, rgba(128,128,128,.3));
+    padding: 6px 12px;
+    text-align: left;
+}
+th {
+    background: var(--hm-table-head-bg, rgba(128,128,128,.08));
+    font-weight: 600;
+}
+
+/* Task lists */
+ul.contains-task-list, .task-list-item {
+    list-style: none;
+}
+.task-list-item input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Error fallbacks surfaced by the C++ renderer */
+.hyprmark-error {
+    background: var(--hm-error-bg, rgba(255,0,0,.08));
+    border: 1px solid var(--hm-error-border, rgba(255,0,0,.25));
+    border-radius: 6px;
+    padding: 16px;
+    margin: 24px auto;
+    max-width: 640px;
+}

@@ -1,0 +1,34 @@
+/* hyprmark theme: github-light — classic GitHub reading palette */
+
+:root {
+    --hm-bg:               #ffffff;
+    --hm-fg:               #1f2328;
+    --hm-heading-fg:       #1f2328;
+
+    --hm-link:             #0969da;
+    --hm-rule:             #d0d7de;
+
+    --hm-quote-fg:         #59636e;
+    --hm-quote-border:     #d0d7de;
+
+    --hm-inline-code-bg:   rgba(175,184,193,.2);
+    --hm-code-bg:          #f6f8fa;
+    --hm-code-fg:          #1f2328;
+
+    --hm-copy-bg:          #f6f8fa;
+    --hm-copy-fg:          #1f2328;
+    --hm-copy-border:      #d0d7de;
+    --hm-copy-hover-bg:    #eaeef2;
+    --hm-copy-ok-bg:       #1a7f37;
+
+    --hm-table-head-bg:    #f6f8fa;
+
+    --hm-error-bg:         #ffebe9;
+    --hm-error-border:     rgba(255,129,130,.4);
+
+    --hm-font-body:        -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --hm-font-mono:        ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --hm-font-size:        16px;
+
+    --hm-mermaid-theme:    default;
+}

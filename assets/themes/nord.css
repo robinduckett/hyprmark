@@ -1,0 +1,34 @@
+/* hyprmark theme: nord (dark) */
+
+:root {
+    --hm-bg:               #2e3440;
+    --hm-fg:               #eceff4;
+    --hm-heading-fg:       #88c0d0;
+
+    --hm-link:             #81a1c1;
+    --hm-rule:             #434c5e;
+
+    --hm-quote-fg:         #d8dee9;
+    --hm-quote-border:     #5e81ac;
+
+    --hm-inline-code-bg:   rgba(136,192,208,.16);
+    --hm-code-bg:          #3b4252;
+    --hm-code-fg:          #eceff4;
+
+    --hm-copy-bg:          rgba(136,192,208,.12);
+    --hm-copy-fg:          #eceff4;
+    --hm-copy-border:      rgba(136,192,208,.25);
+    --hm-copy-hover-bg:    rgba(136,192,208,.22);
+    --hm-copy-ok-bg:       #a3be8c;
+
+    --hm-table-head-bg:    rgba(136,192,208,.08);
+
+    --hm-error-bg:         rgba(191,97,106,.10);
+    --hm-error-border:     rgba(191,97,106,.40);
+
+    --hm-font-body:        "Inter", system-ui, sans-serif;
+    --hm-font-mono:        "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --hm-font-size:        15px;
+
+    --hm-mermaid-theme:    dark;
+}

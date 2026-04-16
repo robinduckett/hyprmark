@@ -1,0 +1,34 @@
+/* hyprmark theme: catppuccin-latte (light) */
+
+:root {
+    --hm-bg:               #eff1f5;
+    --hm-fg:               #4c4f69;
+    --hm-heading-fg:       #8839ef;
+
+    --hm-link:             #1e66f5;
+    --hm-rule:             #ccd0da;
+
+    --hm-quote-fg:         #6c6f85;
+    --hm-quote-border:     #7287fd;
+
+    --hm-inline-code-bg:   rgba(136,57,239,.10);
+    --hm-code-bg:          #e6e9ef;
+    --hm-code-fg:          #4c4f69;
+
+    --hm-copy-bg:          rgba(136,57,239,.10);
+    --hm-copy-fg:          #4c4f69;
+    --hm-copy-border:      rgba(136,57,239,.22);
+    --hm-copy-hover-bg:    rgba(136,57,239,.20);
+    --hm-copy-ok-bg:       #40a02b;
+
+    --hm-table-head-bg:    rgba(136,57,239,.06);
+
+    --hm-error-bg:         rgba(210,15,57,.08);
+    --hm-error-border:     rgba(210,15,57,.30);
+
+    --hm-font-body:        "Inter", system-ui, sans-serif;
+    --hm-font-mono:        "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --hm-font-size:        15px;
+
+    --hm-mermaid-theme:    default;
+}

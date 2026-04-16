@@ -1,0 +1,21 @@
+**/.cache
+.direnv
+.envrc
+.vscode/
+.clangd/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+build/
+build-*/
+buildcl/
+compile_commands.json
+result
+*.kdev4
+.gdb_history
+.superpowers/
+docs/superpowers/
+
+# Test artifacts from PDF export / manual runs
+/*.pdf

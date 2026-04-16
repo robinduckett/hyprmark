@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link id="theme-stylesheet" rel="stylesheet" href="{{THEME_URL}}">
+  <link id="highlight-stylesheet" rel="stylesheet" href="{{ASSET_BASE}}/highlight-theme.css">
+  <link rel="stylesheet" href="{{ASSET_BASE}}/vendor/katex.min.css">
+  <link rel="stylesheet" href="{{ASSET_BASE}}/hyprmark.css">
+  <!-- qwebchannel.js is shipped inside the Qt6 WebChannel library. QtWebEngine
+       exposes it at qrc:/qtwebchannel/qwebchannel.js for embedded pages. -->
+  <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
+  <script src="{{ASSET_BASE}}/vendor/highlight.min.js" defer></script>
+  <script src="{{ASSET_BASE}}/vendor/mermaid.min.js" defer></script>
+  <script src="{{ASSET_BASE}}/vendor/katex.min.js" defer></script>
+  <script src="{{ASSET_BASE}}/vendor/auto-render.min.js" defer></script>
+  <script src="{{ASSET_BASE}}/hyprmark.js" defer></script>
+</head>
+<body>
+  <main id="hyprmark-content" data-source="{{SOURCE_PATH}}">
+    {{CONTENT}}
+  </main>
+</body>
+</html>

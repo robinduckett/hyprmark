@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build + test (Ubuntu)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake pkg-config ninja-build \
+            qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
+            libmd4c-dev libmd4c-html0-dev \
+            libgtest-dev libgmock-dev \
+            hyprlang-dev hyprutils-dev \
+          || sudo apt-get install -y \
+            build-essential cmake pkg-config ninja-build \
+            qt6-base-dev qt6-webengine-dev qt6-webchannel-dev qt6-wayland \
+            libmd4c-dev libmd4c-html0-dev libgtest-dev libgmock-dev
+
+      - name: Install hyprlang + hyprutils from source (if apt packages missing)
+        run: |
+          if ! pkg-config --exists hyprlang; then
+            git clone https://github.com/hyprwm/hyprutils.git
+            cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release
+            sudo cmake --build hyprutils/build --target install -j$(nproc)
+            git clone https://github.com/hyprwm/hyprlang.git
+            cmake -S hyprlang -B hyprlang/build -DCMAKE_BUILD_TYPE=Release
+            sudo cmake --build hyprlang/build --target install -j$(nproc)
+            sudo ldconfig
+          fi
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -GNinja
+
+      - name: Build
+        run: cmake --build build -j$(nproc)
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  nix-build:
+    name: Nix flake build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build
+        run: nix build --print-build-logs .#
