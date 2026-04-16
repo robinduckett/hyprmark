@@ -220,10 +220,10 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.1'
-          # qtpositioning is pulled in by WebEngine but its nmea plugin
-          # has a transitive dep on libQt6SerialPort which we don't ship
-          # and don't need. We exclude it below in EXTRA/EXCLUDE env.
-          modules: 'qtwebengine qtwebchannel qtpositioning'
+          # Intentionally omit qtpositioning — its libqtposition_nmea.so
+          # has a runtime dep on libQt6SerialPort which we don't ship,
+          # and linuxdeploy-plugin-qt auto-bundles every plugin it sees.
+          modules: 'qtwebengine qtwebchannel'
           cache: true
 
       - name: Install hyprutils + hyprlang
@@ -277,11 +277,7 @@ jobs:
       - name: Build AppImage
         env:
           OUTPUT: hyprmark-${{ steps.version.outputs.version }}-x86_64.AppImage
-          # Only pull the Qt plugins we actually use.
           EXTRA_QT_PLUGINS: webenginecore;webenginewidgets;webchannel
-          # Skip position plugins — libqtposition_nmea drags in SerialPort
-          # which we don't ship and don't need.
-          EXCLUDE_QT_PLUGINS: position;serialport
         run: |
           export APPIMAGE_EXTRACT_AND_RUN=1
           export PATH="$PWD/tools:$PATH"
