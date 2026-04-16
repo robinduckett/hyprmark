@@ -7,6 +7,7 @@
 #include "../render/ThemeManager.hpp"
 #include "../core/hyprmark.hpp"
 #include "EmptyState.hpp"
+#include "FindBar.hpp"
 #include "HamburgerMenu.hpp"
 #include "RenderView.hpp"
 #include "TitleBar.hpp"
@@ -19,7 +20,6 @@
 #include <QDropEvent>
 #include <QFileDialog>
 #include <QHBoxLayout>
-#include <QInputDialog>
 #include <QKeySequence>
 #include <QLabel>
 #include <QMessageBox>
@@ -64,6 +64,9 @@ CMainWindow::CMainWindow(QWidget* parent) : QMainWindow(parent) {
     m_pTitleBar = new CTitleBar(central);
     layout->addWidget(m_pTitleBar);
 
+    m_pFindBar = new CFindBar(central);
+    layout->addWidget(m_pFindBar);
+
     m_pStack      = new QStackedWidget(central);
     m_pEmptyState = new CEmptyState(m_pStack);
     m_pRenderView = new CRenderView(m_pStack);
@@ -81,6 +84,16 @@ CMainWindow::CMainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(m_pTocPanel, &CTocPanel::navigateTo, this, [this](const QString& id) {
         if (m_pRenderView) m_pRenderView->scrollToAnchor(id);
     });
+
+    // Find-bar wiring. The bar lives in our central widget; the actual
+    // search runs inside the QWebEngineView.
+    connect(m_pFindBar, &CFindBar::findRequested, this, [this](const QString& q) {
+        if (m_pRenderView) m_pRenderView->findText(q);
+    });
+    connect(m_pFindBar, &CFindBar::findNext,     this, [this]() { if (m_pRenderView) m_pRenderView->findNext(); });
+    connect(m_pFindBar, &CFindBar::findPrevious, this, [this]() { if (m_pRenderView) m_pRenderView->findPrevious(); });
+    connect(m_pFindBar, &CFindBar::findCleared,  this, [this]() { if (m_pRenderView) m_pRenderView->findClear(); });
+    connect(m_pRenderView, &CRenderView::findResult, m_pFindBar, &CFindBar::setResult);
 
     // Status bar: hidden until a message is pushed.
     statusBar()->hide();
@@ -449,14 +462,12 @@ void CMainWindow::zoomReset() {
 }
 
 void CMainWindow::findInPage() {
-    // Qt's QWebEngineView has built-in find. A proper find bar lands later;
-    // for v1 Ctrl+F just surfaces a basic prompt.
-    bool ok = false;
-    const QString q = QInputDialog::getText(this, tr("Find in document"), tr("Find:"), QLineEdit::Normal, QString(), &ok);
-    if (ok && !q.isEmpty())
-        m_pRenderView->findText(q);
+    if (!m_pFindBar)
+        return;
+    if (m_pFindBar->isVisible())
+        m_pFindBar->dismiss();
     else
-        m_pRenderView->findText(QString());
+        m_pFindBar->activate();
 }
 
 void CMainWindow::toggleToc() {

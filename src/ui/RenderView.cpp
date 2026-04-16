@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QWebChannel>
+#include <QWebEngineFindTextResult>
 #include <QWebEngineProfile>
 #include <QWebEnginePage>
 #include <QWebEngineNavigationRequest>
@@ -138,4 +139,41 @@ void CRenderView::scrollToAnchor(const QString& id) {
         "if (el) el.scrollIntoView({behavior:'smooth', block:'start'});"
     ).arg(jsString(id));
     page()->runJavaScript(js);
+}
+
+void CRenderView::findText(const QString& query) {
+    m_lastFindQuery = query;
+    if (query.isEmpty()) {
+        page()->findText(QString());
+        emit findResult(0, 0);
+        return;
+    }
+    page()->findText(query, QWebEnginePage::FindFlags{},
+                     [this](const QWebEngineFindTextResult& r) {
+                         emit findResult(r.activeMatch(), r.numberOfMatches());
+                     });
+}
+
+void CRenderView::findNext() {
+    if (m_lastFindQuery.isEmpty())
+        return;
+    page()->findText(m_lastFindQuery, QWebEnginePage::FindFlags{},
+                     [this](const QWebEngineFindTextResult& r) {
+                         emit findResult(r.activeMatch(), r.numberOfMatches());
+                     });
+}
+
+void CRenderView::findPrevious() {
+    if (m_lastFindQuery.isEmpty())
+        return;
+    page()->findText(m_lastFindQuery, QWebEnginePage::FindBackward,
+                     [this](const QWebEngineFindTextResult& r) {
+                         emit findResult(r.activeMatch(), r.numberOfMatches());
+                     });
+}
+
+void CRenderView::findClear() {
+    m_lastFindQuery.clear();
+    page()->findText(QString());
+    emit findResult(0, 0);
 }

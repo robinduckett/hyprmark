@@ -11,6 +11,7 @@ class CRenderView;
 class CEmptyState;
 class CTitleBar;
 class CTocPanel;
+class CFindBar;
 
 class CMainWindow : public QMainWindow {
     Q_OBJECT
@@ -81,6 +82,7 @@ class CMainWindow : public QMainWindow {
     CRenderView*    m_pRenderView = nullptr;
     CTitleBar*      m_pTitleBar   = nullptr;
     CTocPanel*      m_pTocPanel   = nullptr;
+    CFindBar*       m_pFindBar    = nullptr;
     class CFileWatcher* m_pSourceWatcher = nullptr;
     class QWidget*      m_pRemotePrompt  = nullptr;
     std::filesystem::path m_currentFile;
