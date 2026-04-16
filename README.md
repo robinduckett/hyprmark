@@ -78,6 +78,16 @@ wget https://github.com/robinduckett/hyprmark/releases/latest/download/hyprmark_
 sudo apt install ./hyprmark_0.1.0_amd64.deb
 ```
 
+### AppImage (any distro)
+
+Single self-contained binary with Qt, QtWebEngine, and the hypr* libs bundled — no PPA or system libs needed.
+
+```sh
+wget https://github.com/robinduckett/hyprmark/releases/latest/download/hyprmark-0.1.0-x86_64.AppImage
+chmod +x hyprmark-0.1.0-x86_64.AppImage
+./hyprmark-0.1.0-x86_64.AppImage README.md
+```
+
 ### Arch (AUR)
 
 `yay -S hyprmark` (or any AUR helper) once the AUR package is published. Until then, build from the PKGBUILD under [`packaging/aur/`](packaging/aur/).
