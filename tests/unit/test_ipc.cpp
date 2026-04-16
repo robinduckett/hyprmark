@@ -7,9 +7,13 @@
 #include <QJsonObject>
 #include <QStringList>
 
-TEST(IpcProtocol, SocketPathHasHyprmarkSuffix) {
+TEST(IpcProtocol, SocketPathIsHyprmarkSpecific) {
+    // Under Hyprland: $XDG_RUNTIME_DIR/hypr/$HIS/hyprmark.sock — ends with "hyprmark.sock".
+    // Outside Hyprland (tests/CI):       /tmp/hyprmark-<uid>.sock — starts with "/tmp/hyprmark-".
+    // Either is acceptable; both contain "hyprmark" and a .sock suffix.
     const auto p = Ipc::socketPath();
-    EXPECT_TRUE(p.endsWith("hyprmark.sock"));
+    EXPECT_TRUE(p.contains("hyprmark"));
+    EXPECT_TRUE(p.endsWith(".sock"));
 }
 
 TEST(IpcProtocol, EncodeRequestIsLineJson) {

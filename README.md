@@ -20,12 +20,18 @@ Status: early development (v0.1.0, pre-alpha).
 
 ## Recommended Setup
 
-Add to `~/.config/hypr/hyprland.conf`:
+Add to `~/.config/hypr/hyprland.conf` (or wherever you keep user binds):
 
 ```ini
-# Save area to file
+# Launch hyprmark (empty drop-zone window)
 bind = $mainMod CTRL, M, exec, hyprmark
+
+# Optional: dispatcher bindings for a running instance
+bind = $mainMod CTRL, T, exec, hyprmark --dispatch cycle-theme
+bind = $mainMod CTRL, B, exec, hyprmark --dispatch toggle-toc
 ```
+
+Note hyprland bind syntax: four comma-separated fields — `MODS, KEY, DISPATCHER, PARAMS`. `exec` is the dispatcher; the command it runs is a separate arg after the comma.
 
 ## Usage
 
