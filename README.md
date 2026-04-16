@@ -51,14 +51,7 @@ hyprmark --dispatch list-themes           # print JSON list of themes
 hyprmark --dispatch open /path/to/doc.md  # open a file in the running instance
 ```
 
-Default keybinds: `Ctrl+O` open, `Ctrl+T` cycle theme, `Ctrl+B` toggle TOC, `Ctrl+F` find, `Ctrl+±` zoom, `Ctrl+P` export PDF, `Ctrl+W` close.
-
-## Hyprland binds
-
-```conf
-bind = $mainMod, T, exec, hyprmark --dispatch cycle-theme
-bind = $mainMod, N, exec, hyprmark --dispatch toggle-toc
-```
+Default keybinds: `Ctrl+O` open, `Ctrl+Alt+O` open in new window, `Ctrl+Alt+N` new window, `Ctrl+T` cycle theme, `Ctrl+B` toggle TOC, `Ctrl+F` find, `Ctrl+±` zoom, `Ctrl+P` export PDF, `Ctrl+W` close window.
 
 ## Configuration
 
