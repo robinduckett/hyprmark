@@ -16,3 +16,16 @@ if(UNIT_TESTS)
     HYPRMARK_FIXTURES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures")
   gtest_discover_tests(hyprmark_unit_tests)
 endif()
+
+# GUI smoke tests — Qt Test, offscreen platform. Each file is its own test
+# binary (Qt Test's QTEST_MAIN pattern), registered individually with ctest.
+file(GLOB GUI_TESTS CONFIGURE_DEPENDS "gui/*.cpp")
+
+foreach(src ${GUI_TESTS})
+  get_filename_component(name ${src} NAME_WE)
+  add_executable(${name} ${src})
+  target_link_libraries(${name} PRIVATE hyprmark_core Qt6::Test)
+  add_test(NAME ${name} COMMAND ${name})
+  set_tests_properties(${name} PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+endforeach()
