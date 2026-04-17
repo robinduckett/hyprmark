@@ -31,6 +31,18 @@
     --hm-font-size:        15px;
 
     --hm-mermaid-theme:    dark;
+
+    /* highlight.js — Catppuccin Mocha */
+    --hljs-fg:        #cdd6f4;
+    --hljs-keyword:   #cba6f7;
+    --hljs-string:    #a6e3a1;
+    --hljs-comment:   #6c7086;
+    --hljs-number:    #fab387;
+    --hljs-function:  #89b4fa;
+    --hljs-type:      #f9e2af;
+    --hljs-builtin:   #f38ba8;
+    --hljs-variable:  #fab387;
+    --hljs-tag:       #f38ba8;
 }
 
 ::selection { background: rgba(203,166,247,.32); }

@@ -31,4 +31,16 @@
     --hm-font-size:        15px;
 
     --hm-mermaid-theme:    dark;
+
+    /* highlight.js — Nord */
+    --hljs-fg:        #eceff4;
+    --hljs-keyword:   #81a1c1;
+    --hljs-string:    #a3be8c;
+    --hljs-comment:   #4c566a;
+    --hljs-number:    #b48ead;
+    --hljs-function:  #88c0d0;
+    --hljs-type:      #8fbcbb;
+    --hljs-builtin:   #d08770;
+    --hljs-variable:  #ebcb8b;
+    --hljs-tag:       #bf616a;
 }

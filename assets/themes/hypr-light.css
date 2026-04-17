@@ -31,6 +31,18 @@
     --hm-font-size:        15px;
 
     --hm-mermaid-theme:    default;
+
+    /* highlight.js palette */
+    --hljs-fg:        #1a1235;
+    --hljs-keyword:   #7c3aed;
+    --hljs-string:    #0369a1;
+    --hljs-comment:   #8b7ea8;
+    --hljs-number:    #d97706;
+    --hljs-function:  #b45309;
+    --hljs-type:      #6d28d9;
+    --hljs-builtin:   #db2777;
+    --hljs-variable:  #d97706;
+    --hljs-tag:       #15803d;
 }
 
 h1 {

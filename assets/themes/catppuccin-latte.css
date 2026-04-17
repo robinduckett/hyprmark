@@ -31,4 +31,16 @@
     --hm-font-size:        15px;
 
     --hm-mermaid-theme:    default;
+
+    /* highlight.js — Catppuccin Latte */
+    --hljs-fg:        #4c4f69;
+    --hljs-keyword:   #8839ef;
+    --hljs-string:    #40a02b;
+    --hljs-comment:   #9ca0b0;
+    --hljs-number:    #fe640b;
+    --hljs-function:  #1e66f5;
+    --hljs-type:      #df8e1d;
+    --hljs-builtin:   #d20f39;
+    --hljs-variable:  #fe640b;
+    --hljs-tag:       #d20f39;
 }

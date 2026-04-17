@@ -31,4 +31,16 @@
     --hm-font-size:        16px;
 
     --hm-mermaid-theme:    dark;
+
+    /* highlight.js — GitHub Dark palette */
+    --hljs-fg:        #e6edf3;
+    --hljs-keyword:   #ff7b72;
+    --hljs-string:    #a5d6ff;
+    --hljs-comment:   #8b949e;
+    --hljs-number:    #79c0ff;
+    --hljs-function:  #d2a8ff;
+    --hljs-type:      #ffa657;
+    --hljs-builtin:   #79c0ff;
+    --hljs-variable:  #ffa657;
+    --hljs-tag:       #7ee787;
 }

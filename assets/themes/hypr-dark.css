@@ -33,6 +33,18 @@
 
     /* Mermaid's built-in palette hint — see mermaid docs. "dark" works for dark themes. */
     --hm-mermaid-theme:    dark;
+
+    /* highlight.js palette */
+    --hljs-fg:        #e6e1ff;
+    --hljs-keyword:   #b478ff;
+    --hljs-string:    #6dd1ff;
+    --hljs-comment:   #7a6f9c;
+    --hljs-number:    #ffc07a;
+    --hljs-function:  #f9e2af;
+    --hljs-type:      #cba6ff;
+    --hljs-builtin:   #ff78c6;
+    --hljs-variable:  #ffc07a;
+    --hljs-tag:       #ff78c6;
 }
 
 /* Gradient wordmark-style h1 */

@@ -146,3 +146,51 @@ img {
     margin: 24px auto;
     max-width: 640px;
 }
+
+/* --- highlight.js palette ---
+ * Each theme CSS sets its own --hljs-* custom properties on :root. This
+ * file maps highlight.js's many class names to those variables so adding
+ * a new theme is a ~10-line block rather than 50 lines of hljs rules. */
+.hljs              { color: var(--hljs-fg, inherit); background: transparent; }
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-meta,
+.hljs-section     { color: var(--hljs-keyword, inherit); }
+
+.hljs-string,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition    { color: var(--hljs-string, inherit); }
+
+.hljs-comment,
+.hljs-quote       { color: var(--hljs-comment, inherit); font-style: italic; }
+
+.hljs-number,
+.hljs-regexp,
+.hljs-link        { color: var(--hljs-number, inherit); }
+
+.hljs-title,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-function .hljs-title { color: var(--hljs-function, inherit); }
+
+.hljs-type,
+.hljs-class       { color: var(--hljs-type, inherit); }
+
+.hljs-built_in,
+.hljs-builtin-name { color: var(--hljs-builtin, inherit); }
+
+.hljs-variable,
+.hljs-template-variable,
+.hljs-doctag,
+.hljs-meta-keyword { color: var(--hljs-variable, inherit); }
+
+.hljs-tag,
+.hljs-subst,
+.hljs-deletion    { color: var(--hljs-tag, inherit); }
+
+.hljs-emphasis    { font-style: italic; }
+.hljs-strong      { font-weight: 700; }

@@ -115,7 +115,6 @@ install(FILES
           ${CMAKE_SOURCE_DIR}/assets/template.html
           ${CMAKE_SOURCE_DIR}/assets/hyprmark.css
           ${CMAKE_SOURCE_DIR}/assets/hyprmark.js
-          ${CMAKE_SOURCE_DIR}/assets/highlight-theme.css
         DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/themes
         DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark
