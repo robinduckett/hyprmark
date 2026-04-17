@@ -88,7 +88,7 @@ message(STATUS "Checking deps...")
 
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Widgets Network WebEngineCore WebEngineWidgets WebChannel)
+find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Widgets Network WebEngineCore WebEngineWidgets WebChannel Test)
 qt_standard_project_setup(REQUIRES 6.6)
 
 pkg_check_modules(
