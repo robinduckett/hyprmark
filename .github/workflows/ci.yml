@@ -62,8 +62,10 @@ jobs:
 
       - name: Coverage (gcovr)
         run: |
-          gcovr --root . --filter 'src/' \
+          gcovr --gcov-executable='gcov-14' \
+                --root . --filter 'src/' \
                 --exclude 'src/main.cpp' \
+                --exclude '.*_autogen/.*' \
                 --xml-pretty --output coverage.xml \
                 --txt --print-summary \
                 build
