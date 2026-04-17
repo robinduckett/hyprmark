@@ -72,6 +72,17 @@ message(STATUS "COMMIT: ${HYPRMARK_COMMIT}")
 # position-independent build: strip absolute paths from __FILE__
 add_compile_options(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}/=)
 
+# Coverage (opt-in, applied globally; only matters when test binaries are linked)
+option(HYPRMARK_COVERAGE "Enable --coverage on hyprmark_core and test binaries" OFF)
+if(HYPRMARK_COVERAGE)
+  if(NOT (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG))
+    message(WARNING "HYPRMARK_COVERAGE=ON but build type is not Debug — numbers will be optimised-out")
+  endif()
+  add_compile_options(--coverage -O0 -g)
+  add_link_options(--coverage)
+  message(STATUS "Coverage instrumentation: ON")
+endif()
+
 # dependencies
 message(STATUS "Checking deps...")
 

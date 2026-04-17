@@ -22,7 +22,8 @@ jobs:
             libmd4c-dev libmd4c-html0-dev \
             libgtest-dev libgmock-dev \
             libpixman-1-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libvulkan-dev
+            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-dev libvulkan-dev \
+            gcovr
           # hyprutils >=0.11 uses <print> (C++23), needs GCC 14+
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 140
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 140
@@ -51,13 +52,27 @@ jobs:
         env:
           CC: gcc-14
           CXX: g++-14
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -GNinja
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DHYPRMARK_COVERAGE=ON -GNinja
 
       - name: Build
         run: cmake --build build -j$(nproc)
 
       - name: Test
         run: ctest --test-dir build --output-on-failure
+
+      - name: Coverage (gcovr)
+        run: |
+          gcovr --root . --filter 'src/' \
+                --exclude 'src/main.cpp' \
+                --xml-pretty --output coverage.xml \
+                --txt --print-summary \
+                build
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
 
   nix-build:
     name: Nix flake build
