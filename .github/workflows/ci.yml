@@ -78,7 +78,9 @@ jobs:
 
   macos-build:
     name: Build + test (macOS)
-    runs-on: macos-14
+    # macos-14's Xcode lacks std::ofstream::native_handle (libc++ 18+), which
+    # every hyprutils release since 0.12 uses.
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 

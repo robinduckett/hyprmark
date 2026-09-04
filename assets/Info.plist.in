@@ -25,8 +25,14 @@
   <string>NSApplication</string>
   <key>NSHighResolutionCapable</key>
   <true/>
+  <!--
+    Set by what the release .dmg can actually run on: the Qt frameworks come
+    from Homebrew bottles built on the macos-15 runner (see
+    .github/workflows/release.yml), so the floor is macOS 15. Finder then
+    shows a clear message on older systems instead of a launch failure.
+  -->
   <key>LSMinimumSystemVersion</key>
-  <string>13.0</string>
+  <string>15.0</string>
 
   <!--
     Document claims. Finder / Launch Services deliver "Open With hyprmark"

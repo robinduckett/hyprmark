@@ -321,7 +321,10 @@ jobs:
   # 3. macOS .app bundle inside a .dmg disk image.
   macos-artifacts:
     name: macOS .dmg
-    runs-on: macos-14
+    # macos-15: hyprutils needs libc++ 18+ (std::ofstream::native_handle).
+    # Homebrew's Sequoia bottles set the floor for the .dmg, hence
+    # LSMinimumSystemVersion 15.0 in assets/Info.plist.in. Keep in sync.
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
         with:
