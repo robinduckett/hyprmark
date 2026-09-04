@@ -56,6 +56,12 @@ class CMainWindow : public QMainWindow {
         return m_pRenderView;
     }
 
+    // True once a document has been rendered into this window (i.e. it is
+    // no longer showing the empty-state drop zone).
+    bool hasDocument() const {
+        return m_hasLoadedContent;
+    }
+
   public slots:
     // Exposed for IPC. Re-renders the current file in place, preserving scroll.
     void onSourceFileChanged();

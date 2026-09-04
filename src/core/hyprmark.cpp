@@ -4,6 +4,7 @@
 #include "../render/MarkdownRenderer.hpp"
 #include "../render/ThemeManager.hpp"
 #include "../ui/MainWindow.hpp"
+#include "FileOpenRouter.hpp"
 #include "IpcServer.hpp"
 
 #include <QApplication>
@@ -72,6 +73,12 @@ int CHyprmark::run(int argc, char** argv, const std::string& configPath, const s
     }
 
     m_pApp->setQuitOnLastWindowClosed(true);
+
+    // Documents opened via the platform (macOS Finder "Open With", `open -a`)
+    // arrive as QFileOpenEvent on the application object, not argv.
+    m_pFileOpenRouter = new CFileOpenRouter([this](const std::string& p) { openFromSystem(p); }, m_pApp.get());
+    m_pApp->installEventFilter(m_pFileOpenRouter);
+
     newWindow(filePath); // empty path => empty-state
 
     // Start the IPC server so subsequent invocations dispatch to us. It
@@ -121,6 +128,7 @@ void CHyprmark::shutdown() {
     g_pThemeManager.reset();
 
     // 4. The application itself (runs WebEngine/Chromium shutdown).
+    m_pFileOpenRouter = nullptr; // child of m_pApp
     m_pApp.reset();
 }
 
@@ -139,6 +147,30 @@ CMainWindow* CHyprmark::newWindow(const std::string& filePath) {
     w->raise();
     w->activateWindow();
     return w;
+}
+
+void CHyprmark::openFromSystem(const std::string& filePath) {
+    // Prefer the window the user is looking at if it is still empty, then any
+    // other empty window, otherwise a fresh one. This makes the common
+    // Finder flow (app launches empty, then the open request lands) fill
+    // the initial window instead of leaving a stray empty one behind.
+    CMainWindow* target = nullptr;
+    if (auto* a = activeWindow(); a && !a->hasDocument())
+        target = a;
+    if (!target) {
+        auto it = std::find_if(m_windows.begin(), m_windows.end(), [](CMainWindow* w) { return w && !w->hasDocument(); });
+        if (it != m_windows.end())
+            target = *it;
+    }
+
+    if (!target) {
+        newWindow(filePath);
+        return;
+    }
+    target->openFile(filePath);
+    target->show();
+    target->raise();
+    target->activateWindow();
 }
 
 CMainWindow* CHyprmark::activeWindow() const {
