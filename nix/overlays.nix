@@ -18,7 +18,10 @@ in {
     inputs.hyprutils.overlays.default
     (final: prev: {
       hyprmark = prev.callPackage ./default.nix {
-        stdenv = if prev.stdenv.hostPlatform.isDarwin then prev.stdenv else prev.gcc15Stdenv;
+        # Build with the same compiler as hyprutils. A fixed gccNNStdenv here
+        # breaks every time hyprutils bumps theirs: libhyprutils.so then wants
+        # GLIBCXX symbols our libstdc++ does not have and the link fails.
+        stdenv = if prev.stdenv.hostPlatform.isDarwin then prev.stdenv else final.hyprutils.stdenv;
         version = version + "+date=" + (mkDate (inputs.self.lastModifiedDate or "19700101")) + "_" + (inputs.self.shortRev or "dirty");
         inherit (final) hyprlang hyprutils;
         shortRev = self.sourceInfo.shortRev or "dirty";

@@ -9,14 +9,21 @@ class Hyprmark < Formula
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
   depends_on "md4c"
+  depends_on "pixman"
   depends_on "qt@6"
 
+  # hyprutils main rejects Darwin at configure time; the tagged releases
+  # still build there. Pinned by tag and commit.
   resource "hyprutils" do
-    url "https://github.com/hyprwm/hyprutils.git", branch: "main"
+    url "https://github.com/hyprwm/hyprutils.git",
+        tag:      "v0.14.1",
+        revision: "2db328fe2b3e8b6a2eee5d17a91ff1ca4177719f"
   end
 
   resource "hyprlang" do
-    url "https://github.com/hyprwm/hyprlang.git", branch: "main"
+    url "https://github.com/hyprwm/hyprlang.git",
+        tag:      "v0.6.8",
+        revision: "3a1c1b25b059dae2c6bbc46991562ba1158d125c"
   end
 
   def install

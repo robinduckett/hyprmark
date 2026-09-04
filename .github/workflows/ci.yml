@@ -84,19 +84,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install cmake ninja pkg-config qt@6 md4c googletest
+          brew install cmake ninja pkg-config qt@6 md4c pixman googletest
 
-      - name: Build + install hyprutils + hyprlang from source
+      # hyprutils main rejects Darwin at configure time ("Unsupported
+      # event-loop platform"); the tagged releases still build there, so pin
+      # both libraries to tags. Installed under $HOME/deps and found through
+      # PKG_CONFIG_PATH.
+      - name: Build + install hyprutils + hyprlang (tagged releases)
         run: |
-          git clone --depth 1 https://github.com/hyprwm/hyprutils.git
-          cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release
+          export PKG_CONFIG_PATH="$HOME/deps/lib/pkgconfig:$(brew --prefix)/lib/pkgconfig"
+          git clone --depth 1 --branch v0.14.1 https://github.com/hyprwm/hyprutils.git
+          cmake -S hyprutils -B hyprutils/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/deps"
           cmake --build hyprutils/build --target install -j$(sysctl -n hw.ncpu)
-          git clone --depth 1 https://github.com/hyprwm/hyprlang.git
-          cmake -S hyprlang -B hyprlang/build -DCMAKE_BUILD_TYPE=Release
+          git clone --depth 1 --branch v0.6.8 https://github.com/hyprwm/hyprlang.git
+          cmake -S hyprlang -B hyprlang/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/deps"
           cmake --build hyprlang/build --target install -j$(sysctl -n hw.ncpu)
 
       - name: Configure
         run: |
+          export PKG_CONFIG_PATH="$HOME/deps/lib/pkgconfig:$(brew --prefix)/lib/pkgconfig"
           export CMAKE_PREFIX_PATH="$(brew --prefix qt@6)"
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -GNinja
 
