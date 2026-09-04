@@ -1,7 +1,7 @@
 class Hyprmark < Formula
   desc "Markdown viewer for the Hyprland ecosystem"
   homepage "https://github.com/robinduckett/hyprmark"
-  url "https://github.com/robinduckett/hyprmark/archive/refs/tags/v0.1.1.tar.gz"
+  url "https://github.com/robinduckett/hyprmark/archive/refs/tags/v0.2.0.tar.gz"
   license "BSD-3-Clause"
   head "https://github.com/robinduckett/hyprmark.git", branch: "main"
 
