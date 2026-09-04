@@ -48,6 +48,10 @@ TEST(FileWatcher, DebouncesRapidWritesToSingleEmission) {
         appendByte(path);
         QTest::qWait(2);
     }
+    // Watcher latency is platform-specific: inotify reports immediately,
+    // macOS FSEvents can take a few hundred ms. Wait for the first emission
+    // rather than a fixed interval, then give the debounce time to settle.
+    ASSERT_TRUE(QTest::qWaitFor([&] { return spy.count() >= 1; }, 3000));
     QTest::qWait(150);
 
     EXPECT_EQ(spy.count(), 1);
@@ -74,8 +78,7 @@ TEST(FileWatcher, MuteSuppressesEmissionDuringWindow) {
 
     QTest::qWait(120);
     appendByte(path);
-    QTest::qWait(60);
-    EXPECT_GE(spy.count(), 1);
+    EXPECT_TRUE(QTest::qWaitFor([&] { return spy.count() >= 1; }, 3000));
     std::filesystem::remove(path);
 }
 
@@ -92,8 +95,7 @@ TEST(FileWatcher, MuteAutoReleasesAfterMs) {
     w.muteFor(50);
     QTest::qWait(80);
     appendByte(path);
-    QTest::qWait(60);
-    EXPECT_GE(spy.count(), 1);
+    EXPECT_TRUE(QTest::qWaitFor([&] { return spy.count() >= 1; }, 3000));
     std::filesystem::remove(path);
 }
 
