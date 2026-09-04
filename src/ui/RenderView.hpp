@@ -49,6 +49,12 @@ class CRenderView : public QWebEngineView {
     // find bar can show "N of M".
     void findResult(int activeMatch, int totalMatches);
 
+  protected:
+    // Replaces Chromium's stock menu (Back, Reload, View page source, Save
+    // page, ...) with the handful of actions that apply to a rendered
+    // markdown document.
+    void contextMenuEvent(QContextMenuEvent* event) override;
+
   private:
     CBridge*         m_bridge      = nullptr;
     QWebChannel*     m_channel     = nullptr;

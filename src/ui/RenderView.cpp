@@ -4,10 +4,13 @@
 #include "Bridge.hpp"
 #include "UrlInterceptor.hpp"
 
+#include <QContextMenuEvent>
 #include <QDesktopServices>
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <QMenu>
 #include <QWebChannel>
+#include <QWebEngineContextMenuRequest>
 #include <QWebEngineFindTextResult>
 #include <QWebEngineProfile>
 #include <QWebEnginePage>
@@ -16,7 +19,7 @@
 
 namespace {
     // A QWebEnginePage that forwards every JS console.log / error to stderr
-    // via Debug::log — essential for diagnosing issues in the embedded page.
+    // via Debug::log - essential for diagnosing issues in the embedded page.
     class CLoggingPage : public QWebEnginePage {
       public:
         using QWebEnginePage::QWebEnginePage;
@@ -27,7 +30,7 @@ namespace {
             const char* lvl = (level == ErrorMessageLevel) ? "ERR"
                             : (level == WarningMessageLevel) ? "WARN"
                             : "LOG";
-            Debug::log(LOG, "[webview:{}] {}:{} — {}", lvl, sourceID.toStdString(), lineNumber, message.toStdString());
+            Debug::log(LOG, "[webview:{}] {}:{} - {}", lvl, sourceID.toStdString(), lineNumber, message.toStdString());
         }
     };
 }
@@ -60,7 +63,7 @@ CRenderView::CRenderView(QWidget* parent) : QWebEngineView(parent) {
     s->setAttribute(QWebEngineSettings::ErrorPageEnabled,                false);
     s->setAttribute(QWebEngineSettings::PdfViewerEnabled,                false);
 
-    // QWebChannel + Bridge — this is how C++ talks to hyprmark.js.
+    // QWebChannel + Bridge - this is how C++ talks to hyprmark.js.
     m_bridge  = new CBridge(this);
     m_channel = new QWebChannel(this);
     m_channel->registerObject(QStringLiteral("hyprmarkHost"), m_bridge);
@@ -88,13 +91,47 @@ CRenderView::CRenderView(QWidget* parent) : QWebEngineView(parent) {
 
 CRenderView::~CRenderView() = default;
 
+void CRenderView::contextMenuEvent(QContextMenuEvent* event) {
+    // Chromium's default menu is built for a browser tab: Back, Forward,
+    // Reload, View page source, Save page, Inspect. None of that applies to
+    // a rendered markdown document (View page source in particular does
+    // nothing here because there is no tab to show it in), so build a small
+    // menu from the page actions that do.
+    const auto* req  = lastContextMenuRequest();
+    auto*       menu = new QMenu(this);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+
+    if (req && req->linkUrl().isValid()) {
+        const QUrl link   = req->linkUrl();
+        const auto scheme = link.scheme();
+        if (scheme == QLatin1String("http") || scheme == QLatin1String("https")) {
+            auto* open = menu->addAction(tr("Open Link in Browser"));
+            connect(open, &QAction::triggered, this, [link]() { QDesktopServices::openUrl(link); });
+        }
+        menu->addAction(page()->action(QWebEnginePage::CopyLinkToClipboard));
+    }
+
+    if (req && req->mediaType() == QWebEngineContextMenuRequest::MediaTypeImage) {
+        menu->addAction(page()->action(QWebEnginePage::CopyImageToClipboard));
+        menu->addAction(page()->action(QWebEnginePage::CopyImageUrlToClipboard));
+    }
+
+    if (!menu->isEmpty())
+        menu->addSeparator();
+    menu->addAction(page()->action(QWebEnginePage::Copy));
+    menu->addAction(page()->action(QWebEnginePage::SelectAll));
+
+    menu->popup(event->globalPos());
+    event->accept();
+}
+
 void CRenderView::loadInitial(const QString& fullPageHtml, const QUrl& baseUrl) {
     // setContent bypasses the 2 MB limit of setHtml (which encodes via data:).
     page()->setContent(fullPageHtml.toUtf8(), QStringLiteral("text/html;charset=utf-8"), baseUrl);
     m_interceptor->resetBlockedCount();
 }
 
-// JSON-encode a single string the same way JS.stringify would — used for
+// JSON-encode a single string the same way JS.stringify would - used for
 // passing HTML/path/url arguments into runJavaScript safely.
 static QString jsString(const QString& s) {
     QString o;
