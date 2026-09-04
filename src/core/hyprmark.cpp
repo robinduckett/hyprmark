@@ -7,6 +7,8 @@
 #include "IpcServer.hpp"
 
 #include <QApplication>
+#include <QCoreApplication>
+#include <QEvent>
 #include <QWindow>
 
 #include <algorithm>
@@ -14,7 +16,9 @@
 
 CHyprmark::CHyprmark() = default;
 
-CHyprmark::~CHyprmark() = default;
+CHyprmark::~CHyprmark() {
+    shutdown(); // no-op if run() already tore everything down
+}
 
 int CHyprmark::run(int argc, char** argv, const std::string& configPath, const std::string& filePath) {
     m_pApp        = std::make_unique<QApplication>(argc, argv);
@@ -77,7 +81,47 @@ int CHyprmark::run(int argc, char** argv, const std::string& configPath, const s
     if (!g_pIpcServer->listen())
         Debug::log(WARN, "IPC server disabled; --dispatch will not work while this is running.");
 
-    return m_pApp->exec();
+    const int rc = m_pApp->exec();
+
+    // Tear down here, while main() is still on the stack, rather than letting
+    // the globals die in the static-destructor phase after main() returns.
+    // QApplication's destructor runs Qt's post-routines, which is where Qt
+    // WebEngine shuts Chromium down (GPU thread, Skia contexts, accessibility
+    // caches, ...). By the time static destructors run, function-local
+    // statics inside Qt/Chromium are already gone and that shutdown crashes
+    // (SIGSEGV in GrDirectContext / qAccessibleCleanup on macOS, surfacing as
+    // "hyprmark quit unexpectedly" a while after the window closed).
+    shutdown();
+    return rc;
+}
+
+void CHyprmark::shutdown() {
+    if (!m_pApp)
+        return;
+
+    // 1. Windows. Every QWebEngineView/QWebEnginePage must be destroyed
+    //    before WebEngine's post-routine runs. Windows closed via close()
+    //    have a DeferredDelete pending; anything still alive (quit via IPC
+    //    or the menu with several windows open) is deleted directly, which
+    //    also cancels its pending deferred delete.
+    const auto windows = m_windows; // destroyed() erases from m_windows as we go
+    for (auto* w : windows)
+        delete w;
+    m_windows.clear();
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+
+    // 2. QObject-owning globals that need a live event dispatcher to die
+    //    cleanly (QLocalServer unlinks its socket; CConfigManager owns a
+    //    QFileSystemWatcher with a background thread on macOS).
+    g_pIpcServer.reset();
+    g_pConfigManager.reset();
+
+    // 3. Plain globals created in run(), reverse order.
+    g_pRenderer.reset();
+    g_pThemeManager.reset();
+
+    // 4. The application itself (runs WebEngine/Chromium shutdown).
+    m_pApp.reset();
 }
 
 CMainWindow* CHyprmark::newWindow(const std::string& filePath) {

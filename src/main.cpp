@@ -157,11 +157,20 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    int rc = 1;
     try {
         g_pHyprmark = makeUnique<CHyprmark>();
-        return g_pHyprmark->run(argc, argv, configPath, filePath);
+        rc          = g_pHyprmark->run(argc, argv, configPath, filePath);
     } catch (const std::exception& ex) {
         Debug::log(CRIT, "hyprmark threw: {}", ex.what());
-        return 1;
+        rc = 1;
     }
+
+    // Release every global before main() returns so nothing Qt-related is
+    // left for the static-destructor phase (see CHyprmark::run for why that
+    // crashes with Qt WebEngine). run() has normally already torn these
+    // down; this makes the exception path equally deterministic.
+    g_pHyprmark.reset();
+    g_pConfigManager.reset();
+    return rc;
 }

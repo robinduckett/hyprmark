@@ -28,6 +28,12 @@ class CHyprmark {
     const std::vector<CMainWindow*>& windows() const { return m_windows; }
 
   private:
+    // Deterministic teardown, reverse of construction: windows (every
+    // QWebEngineView/Page), IPC server, config manager, then the
+    // QApplication itself. Must run while main() is still on the stack;
+    // see the comment at the end of run().
+    void shutdown();
+
     std::unique_ptr<QApplication>          m_pApp;
     std::vector<CMainWindow*>              m_windows; // non-owning; Qt deletes on close
 };
