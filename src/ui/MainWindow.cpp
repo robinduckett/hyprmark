@@ -322,6 +322,7 @@ void CMainWindow::newEmptyWindow() {
 void CMainWindow::openFile(const std::filesystem::path& path) {
     if (!g_pRenderer || !g_pThemeManager) {
         Debug::log(ERR, "openFile called before renderer/theme manager initialised");
+        showError(tr("Internal error: renderer not ready"));
         return;
     }
     m_currentFile = path;

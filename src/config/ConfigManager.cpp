@@ -21,8 +21,10 @@ namespace {
             const auto paths = Hyprutils::Path::findConfig("hyprmark");
             if (paths.first.has_value())
                 return paths.first.value();
+        } catch (const std::exception& ex) {
+            Debug::log(WARN, "findDefaultConfigPath: {}", ex.what());
         } catch (...) {
-            // fall through
+            Debug::log(WARN, "findDefaultConfigPath: unknown exception during XDG path resolution");
         }
         return {};
     }
@@ -218,6 +220,10 @@ namespace {
         std::error_code ec;
         const auto dir = base / "hypr";
         std::filesystem::create_directories(dir, ec);
+        if (ec) {
+            Debug::log(WARN, "resolveWritePath: cannot create {}: {}", dir.string(), ec.message());
+            return {};
+        }
         return dir / "hyprmark.conf";
     }
 
@@ -254,6 +260,10 @@ bool CConfigManager::writeKey(const std::string& section, const std::string& key
         if (f) {
             std::ostringstream ss;
             ss << f.rdbuf();
+            if (f.bad()) {
+                Debug::log(ERR, "writeKey: read error on {}", targetPath.string());
+                return false;
+            }
             original = ss.str();
         }
     }
