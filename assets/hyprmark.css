@@ -1,4 +1,4 @@
-/* hyprmark.css — base layout and chrome styles that are theme-agnostic.
+/* hyprmark.css - base layout and chrome styles that are theme-agnostic.
  * Theme CSS files (themes/*.css) supply colour custom-properties and
  * typography accents. Highlight.js CSS lives separately in highlight-theme.css. */
 
@@ -101,6 +101,46 @@ code {
 .code-block .copy-btn:focus { opacity: 1; }
 .code-block .copy-btn:hover { background: var(--hm-copy-hover-bg, rgba(255,255,255,.16)); }
 .code-block .copy-btn.copied { background: var(--hm-copy-ok-bg, #2ea043); color: #fff; }
+
+/* --- Print / PDF export ---
+ * QWebEnginePage::printToPdf lays the page out for print media. On screen
+ * long code lines scroll horizontally; on paper there is nothing to scroll,
+ * so Chromium paints the scrollbar as a picture and clips the line at the
+ * page edge. Wrap instead: every character stays inside the block and the
+ * block stays inside the page. Tables get the same treatment so an
+ * unbreakable token (a URL, a hash) cannot push a column off the page. */
+@media print {
+    body {
+        zoom: 1 !important; /* on-screen zoom (HM.setScale) must not scale the PDF */
+    }
+    main#hyprmark-content {
+        max-width: none; /* printToPdf uses zero page margins; the padding above is the margin */
+    }
+    pre,
+    .code-block,
+    .code-block pre {
+        overflow: visible;
+    }
+    pre,
+    pre code {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+    .code-block {
+        break-inside: avoid; /* keep short blocks whole; long ones still split */
+    }
+    .code-block .copy-btn {
+        display: none;
+    }
+    th, td {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+    a {
+        text-decoration: none;
+    }
+}
 
 /* Mermaid container */
 .mermaid {
