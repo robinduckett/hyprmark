@@ -34,14 +34,37 @@ int CHyprmark::run(int argc, char** argv, const std::string& configPath, const s
     g_pThemeManager = makeUnique<CThemeManager>();
     g_pRenderer     = makeUnique<CMarkdownRenderer>();
 
-    // asset base: install default unless an in-tree assets/ dir sits next to
-    // the running binary (dev ergonomics).
-    const std::filesystem::path exeDir = std::filesystem::absolute(std::filesystem::path(argv[0])).parent_path();
-    const auto                  devAssets = exeDir.parent_path() / "assets";
-    if (std::filesystem::exists(devAssets / "template.html")) {
-        g_pRenderer->setAssetBase(devAssets);
-        g_pThemeManager->setBuiltinDir(devAssets / "themes");
-        Debug::log(LOG, "Using dev asset base: {}", devAssets.string());
+    // asset base: walk up from the binary looking for assets/template.html.
+    // Linux dev builds: build/../assets; macOS .app bundles add extra nesting
+    // (hyprmark.app/Contents/MacOS/hyprmark) so we try several ancestors.
+    std::error_code             fsEc;
+    const std::filesystem::path exeDir = std::filesystem::absolute(std::filesystem::path(argv[0]), fsEc).parent_path();
+    bool                        foundAssets = false;
+    if (!fsEc) {
+#ifdef __APPLE__
+        // Installed .app bundle: assets live in Contents/Resources/.
+        const auto bundleResources = exeDir.parent_path() / "Resources";
+        if (std::filesystem::exists(bundleResources / "template.html")) {
+            g_pRenderer->setAssetBase(bundleResources);
+            g_pThemeManager->setBuiltinDir(bundleResources / "themes");
+            Debug::log(LOG, "Using bundle asset base: {}", bundleResources.string());
+            foundAssets = true;
+        }
+#endif
+        if (!foundAssets) {
+            auto dir = exeDir;
+            for (int i = 0; i < 5 && !dir.empty() && dir.has_parent_path(); ++i) {
+                dir = dir.parent_path();
+                const auto candidate = dir / "assets";
+                if (std::filesystem::exists(candidate / "template.html")) {
+                    g_pRenderer->setAssetBase(candidate);
+                    g_pThemeManager->setBuiltinDir(candidate / "themes");
+                    Debug::log(LOG, "Using dev asset base: {}", candidate.string());
+                    foundAssets = true;
+                    break;
+                }
+            }
+        }
     }
 
     m_pApp->setQuitOnLastWindowClosed(true);

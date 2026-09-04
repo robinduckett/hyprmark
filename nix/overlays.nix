@@ -18,7 +18,7 @@ in {
     inputs.hyprutils.overlays.default
     (final: prev: {
       hyprmark = prev.callPackage ./default.nix {
-        stdenv = prev.gcc15Stdenv;
+        stdenv = if prev.stdenv.hostPlatform.isDarwin then prev.stdenv else prev.gcc15Stdenv;
         version = version + "+date=" + (mkDate (inputs.self.lastModifiedDate or "19700101")) + "_" + (inputs.self.shortRev or "dirty");
         inherit (final) hyprlang hyprutils;
         shortRev = self.sourceInfo.shortRev or "dirty";

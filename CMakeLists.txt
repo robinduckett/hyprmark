@@ -14,7 +14,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG)
   message(STATUS "Configuring hyprmark in Debug with CMake")
@@ -24,7 +23,6 @@ else()
   message(STATUS "Configuring hyprmark in Release with CMake")
 endif()
 
-include_directories(.)
 include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -113,31 +111,76 @@ target_link_libraries(hyprmark_core PUBLIC
 target_include_directories(hyprmark_core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 qt_add_executable(hyprmark src/main.cpp)
-target_link_libraries(hyprmark PRIVATE
-  rt Threads::Threads
-  hyprmark_core)
+if(APPLE)
+  set_target_properties(hyprmark PROPERTIES
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_GUI_IDENTIFIER "org.hyprland.hyprmark"
+    MACOSX_BUNDLE_BUNDLE_NAME "hyprmark"
+    MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION}"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION}"
+    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/assets/Info.plist.in"
+    MACOSX_BUNDLE_ICON_FILE "hyprmark.icns")
+  target_link_libraries(hyprmark PRIVATE Threads::Threads hyprmark_core)
+
+  # Everything the app needs at runtime is copied into the bundle at *build*
+  # time (Contents/Resources/...), so build/hyprmark.app is self-contained:
+  # `open build/hyprmark.app`, `cmake --install`, macdeployqt and the release
+  # .dmg all see the same complete bundle. CHyprmark::run() locates these via
+  # <executable dir>/../Resources/template.html.
+  set(_BUNDLE_RESOURCES
+    "${CMAKE_SOURCE_DIR}/assets/hyprmark.icns"
+    "${CMAKE_SOURCE_DIR}/assets/template.html"
+    "${CMAKE_SOURCE_DIR}/assets/hyprmark.css"
+    "${CMAKE_SOURCE_DIR}/assets/hyprmark.js")
+  set_source_files_properties(${_BUNDLE_RESOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
+  file(GLOB _BUNDLE_THEMES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/assets/themes/*.css")
+  if(_BUNDLE_THEMES)
+    set_source_files_properties(${_BUNDLE_THEMES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/themes")
+  endif()
+
+  file(GLOB _BUNDLE_VENDOR CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/assets/vendor/*")
+  if(_BUNDLE_VENDOR)
+    set_source_files_properties(${_BUNDLE_VENDOR} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/vendor")
+  endif()
+
+  # Ship example.conf as Resources/hyprmark.conf (same rename as the Linux
+  # install). MACOSX_PACKAGE_LOCATION cannot rename, so stage a copy first.
+  set(_BUNDLE_CONF "${CMAKE_BINARY_DIR}/bundle-staging/hyprmark.conf")
+  configure_file("${CMAKE_SOURCE_DIR}/assets/example.conf" "${_BUNDLE_CONF}" COPYONLY)
+  set_source_files_properties("${_BUNDLE_CONF}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources" GENERATED TRUE)
+
+  target_sources(hyprmark PRIVATE ${_BUNDLE_RESOURCES} ${_BUNDLE_THEMES} ${_BUNDLE_VENDOR} "${_BUNDLE_CONF}")
+else()
+  target_link_libraries(hyprmark PRIVATE rt Threads::Threads hyprmark_core)
+endif()
 
 # Installation
-install(TARGETS hyprmark)
-install(FILES ${CMAKE_SOURCE_DIR}/assets/example.conf
-        DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hypr
-        RENAME hyprmark.conf)
-install(FILES
-          ${CMAKE_SOURCE_DIR}/assets/template.html
-          ${CMAKE_SOURCE_DIR}/assets/hyprmark.css
-          ${CMAKE_SOURCE_DIR}/assets/hyprmark.js
-        DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/themes
-        DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark
-        FILES_MATCHING PATTERN "*.css")
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/vendor
-        DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark
-        OPTIONAL)
-install(FILES ${CMAKE_SOURCE_DIR}/assets/hyprmark.desktop
-        DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/applications)
-install(FILES ${CMAKE_SOURCE_DIR}/assets/icon.svg
-        DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps
-        RENAME hyprmark.svg)
+if(APPLE)
+  # The bundle already carries its resources (see above): install it whole.
+  install(TARGETS hyprmark BUNDLE DESTINATION .)
+else()
+  install(TARGETS hyprmark)
+  install(FILES ${CMAKE_SOURCE_DIR}/assets/example.conf
+          DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hypr
+          RENAME hyprmark.conf)
+  install(FILES
+            ${CMAKE_SOURCE_DIR}/assets/template.html
+            ${CMAKE_SOURCE_DIR}/assets/hyprmark.css
+            ${CMAKE_SOURCE_DIR}/assets/hyprmark.js
+          DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark)
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/themes
+          DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark
+          FILES_MATCHING PATTERN "*.css")
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/vendor
+          DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/hyprmark
+          OPTIONAL)
+  install(FILES ${CMAKE_SOURCE_DIR}/assets/hyprmark.desktop
+          DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/applications)
+  install(FILES ${CMAKE_SOURCE_DIR}/assets/icon.svg
+          DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/hicolor/scalable/apps
+          RENAME hyprmark.svg)
+endif()
 
 # Tests (Debug builds only, matching hyprutils convention)
 if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG OR BUILD_TESTING)

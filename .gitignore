@@ -19,3 +19,9 @@ docs/superpowers/
 
 # Test artifacts from PDF export / manual runs
 /*.pdf
+
+# Finder metadata
+.DS_Store
+
+# Local release packaging output (mirrors the release workflow)
+dist/

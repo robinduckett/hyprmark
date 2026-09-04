@@ -24,12 +24,13 @@ stdenv.mkDerivation {
 
   buildInputs = [
     qt6.qtbase
-    qt6.qtwayland
     qt6.qtwebengine
     qt6.qtwebchannel
     md4c
     hyprlang
     hyprutils
+  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+    qt6.qtwayland
   ];
 
   cmakeFlags = lib.mapAttrsToList lib.cmakeFeature {
@@ -43,7 +44,7 @@ stdenv.mkDerivation {
     homepage = "https://github.com/hyprwm/hyprmark";
     description = "Markdown viewer for Hyprland";
     license = lib.licenses.bsd3;
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.unix;
     mainProgram = "hyprmark";
   };
 }
