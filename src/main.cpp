@@ -10,6 +10,7 @@
 #include <QJsonObject>
 
 #include <cstddef>
+#include <filesystem>
 #include <optional>
 #include <print>
 #include <string>
@@ -99,7 +100,11 @@ int main(int argc, char** argv) {
                 std::println(stderr, "Error: at most one file path may be given (got '{}' and '{}').", filePath, arg);
                 return 1;
             }
-            filePath = arg;
+            // Resolve against our cwd now: the path may be forwarded to an
+            // already-running instance whose cwd is different.
+            std::error_code ec;
+            const auto      abs = std::filesystem::absolute(arg, ec);
+            filePath            = ec ? arg : abs.lexically_normal().string();
         }
     }
 
